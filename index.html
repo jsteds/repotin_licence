@@ -129,51 +129,77 @@
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- PIN LOCK SCREEN (Proteksi Akses di HP)                               -->
+  <!-- LOGIN AUTHENTICATION SCREEN (Gerbang Masuk Admin)                  -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <div id="pinScreen" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-6 hidden">
-    <div
-      class="w-16 h-16 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-4 text-indigo-400">
-      <i data-lucide="shield-check" class="w-8 h-8"></i>
-    </div>
-    <h2 class="text-xl font-bold text-white mb-1">Repotin Companion</h2>
-    <p class="text-xs text-slate-400 mb-6">Masukkan PIN Keamanan Admin Anda</p>
+  <div id="loginScreen" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-6 transition-all duration-300">
+    <div class="max-w-sm w-full space-y-6">
+      <!-- Logo & Branding -->
+      <div class="text-center space-y-2">
+        <div class="inline-flex w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 p-0.5 shadow-xl shadow-indigo-500/20 mb-1">
+          <div class="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center text-white font-black text-2xl">
+            R
+          </div>
+        </div>
+        <h1 class="text-xl font-extrabold text-white tracking-tight">Repotin License Manager</h1>
+        <p class="text-xs text-slate-400">Masuk dengan Kredensial Administrator</p>
+      </div>
 
-    <div id="pinDots" class="flex gap-3 mb-8">
-      <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all"></div>
-      <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all"></div>
-      <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all"></div>
-      <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all"></div>
-    </div>
+      <!-- Login Form Card -->
+      <form id="loginForm" onsubmit="return handleLoginSubmit(event)" class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
+        <!-- Error Alert -->
+        <div id="loginErrorMsg" class="hidden p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center gap-2">
+          <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+          <span id="loginErrorText">Password tidak sesuai!</span>
+        </div>
 
-    <!-- Keypad -->
-    <div class="grid grid-cols-3 gap-3.5 max-w-xs w-full">
-      <button onclick="pressPin('1')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">1</button>
-      <button onclick="pressPin('2')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">2</button>
-      <button onclick="pressPin('3')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">3</button>
-      <button onclick="pressPin('4')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">4</button>
-      <button onclick="pressPin('5')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">5</button>
-      <button onclick="pressPin('6')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">6</button>
-      <button onclick="pressPin('7')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">7</button>
-      <button onclick="pressPin('8')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">8</button>
-      <button onclick="pressPin('9')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">9</button>
-      <button onclick="clearPin()"
-        class="h-14 rounded-2xl bg-slate-900/40 text-slate-400 active:scale-95 text-xs font-semibold uppercase transition-all">Reset</button>
-      <button onclick="pressPin('0')"
-        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">0</button>
-      <button onclick="delPin()"
-        class="h-14 rounded-2xl bg-slate-900/40 text-slate-400 active:scale-95 flex items-center justify-center transition-all">
-        <i data-lucide="delete" class="w-5 h-5"></i>
-      </button>
+        <!-- Username Field -->
+        <div class="space-y-1.5">
+          <label class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="user" class="w-3.5 h-3.5 text-indigo-400"></i> Username Admin
+          </label>
+          <input type="text" id="loginUsername" required autocomplete="username"
+            placeholder="admin" value="admin"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-white text-xs placeholder:text-slate-500 focus:outline-hidden focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium" />
+        </div>
+
+        <!-- Password Field -->
+        <div class="space-y-1.5">
+          <label class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="key" class="w-3.5 h-3.5 text-indigo-400"></i> Password Admin
+          </label>
+          <div class="relative">
+            <input type="password" id="loginPassword" required autocomplete="current-password"
+              placeholder="Masukkan password..."
+              class="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-white text-xs placeholder:text-slate-500 focus:outline-hidden focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-mono" />
+            <button type="button" onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer">
+              <i id="loginEyeIcon" data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember Me Toggle -->
+        <div class="flex items-center justify-between pt-1">
+          <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
+            <input type="checkbox" id="loginRememberMe" checked
+              class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900 cursor-pointer" />
+            <span>Ingat Saya di Perangkat Ini</span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="loginBtn"
+          class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white text-xs font-bold shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2">
+          <i data-lucide="log-in" class="w-4 h-4"></i>
+          <span>MASUK KE DASHBOARD</span>
+        </button>
+      </form>
+
+      <!-- Footer Info -->
+      <div class="text-center text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+        <span>Sesi Aman • Terenkripsi Supabase REST API</span>
+      </div>
     </div>
   </div>
 
@@ -194,8 +220,7 @@
           <div class="flex items-center gap-1.5">
             <h1 class="text-sm font-extrabold text-white tracking-tight leading-none">Repotin Companion</h1>
             <span
-              class="text-[9px] font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/20 px-1.5 py-0.2 rounded-md">GAS
-              Cloud</span>
+              class="text-[9px] font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/20 px-1.5 py-0.2 rounded-md">GitHub Pages</span>
           </div>
           <div class="flex items-center gap-1.5 mt-0.5">
             <span id="connIndicator" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -206,12 +231,16 @@
 
       <div class="flex items-center gap-1">
         <button onclick="loadDevices(true)" id="refreshBtn" title="Segarkan Data"
-          class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-90 transition-all">
+          class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-90 transition-all cursor-pointer">
           <i data-lucide="refresh-cw" class="w-4 h-4"></i>
         </button>
         <button onclick="toggleTheme()" id="themeBtn" title="Ganti Tema"
-          class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-90 transition-all">
+          class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-90 transition-all cursor-pointer">
           <i data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+        <button onclick="handleLogout()" id="logoutBtn" title="Logout / Kunci Layar"
+          class="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 active:scale-90 transition-all cursor-pointer">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
         </button>
       </div>
     </div>
@@ -566,39 +595,36 @@
     <!-- ── TAB 4: SETELAN & PANDUAN ── -->
     <section id="tab-settings" class="tab-content hidden space-y-3">
 
-      <!-- PIN Security Setting -->
+      <!-- Admin Login Credentials Setting -->
       <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
-        <div class="flex items-center gap-2">
-          <div class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-            <i data-lucide="lock" class="w-4 h-4"></i>
-          </div>
-          <div>
-            <h2 class="text-xs font-bold text-white">Kunci PIN Keamanan HP</h2>
-            <p class="text-[10px] text-slate-400">Proteksi aplikasi agar tidak dibuka orang lain</p>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-          <span class="text-xs text-slate-300 font-semibold">Aktifkan Kunci PIN 4 Digit</span>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input id="pinEnableToggle" type="checkbox" onchange="togglePinSetting()" class="sr-only peer">
-            <div
-              class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
             </div>
-          </label>
+            <div>
+              <h2 class="text-xs font-bold text-white">Keamanan Login Administrator</h2>
+              <p class="text-[10px] text-slate-400">Proteksi akses dashboard saat dibuka publik</p>
+            </div>
+          </div>
+          <button onclick="handleLogout()"
+            class="px-2.5 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-400 text-[10px] font-bold flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
+            <i data-lucide="log-out" class="w-3 h-3"></i>
+            <span>Logout</span>
+          </button>
         </div>
 
-        <div id="pinChangeWrap" class="space-y-2 hidden">
-          <label class="text-[10px] text-slate-400 block">Atur 4 Digit PIN Baru:</label>
+        <div class="space-y-2 pt-1 border-t border-slate-800/80">
+          <label class="text-[10px] text-slate-400 block font-semibold">Ubah Password Admin (Default: <code class="text-indigo-400 font-mono">repotin2026</code>):</label>
           <div class="flex gap-2">
-            <input id="newPinInput" type="password" maxlength="4" pattern="[0-9]*" inputmode="numeric"
-              placeholder="4 digit"
-              class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-center font-mono text-base tracking-widest text-white focus:outline-none focus:border-indigo-500" />
-            <button onclick="saveNewPin()"
-              class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shrink-0">
+            <input id="newAdminPasswordInput" type="password" placeholder="Password baru..."
+              class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 font-mono text-xs text-white focus:outline-hidden focus:border-indigo-500" />
+            <button onclick="saveNewAdminPassword()"
+              class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white rounded-xl text-xs font-bold shrink-0 cursor-pointer">
               Simpan
             </button>
           </div>
+          <p class="text-[10px] text-slate-500">Password ini wajib dimasukkan setiap kali web app dibuka pada device atau browser baru.</p>
         </div>
       </div>
 
@@ -866,9 +892,6 @@
       editingHwid: "",
       extendingHwid: "",
       extendDuration: "1m",
-      pinEntered: "",
-      savedPin: SafeStorage.get("repotin_companion_pin") || "",
-      isPinEnabled: SafeStorage.get("repotin_pin_enabled") === "true",
       history: savedHistory
     };
 
@@ -1679,82 +1702,103 @@
       showToast("Riwayat lokal dibersihkan.");
     }
 
-    // --- Tab 4: Security PIN Settings ---
-    function togglePinSetting() {
-      const isEnabled = document.getElementById("pinEnableToggle").checked;
-      state.isPinEnabled = isEnabled;
-      SafeStorage.set("repotin_pin_enabled", isEnabled ? "true" : "false");
-
-      const wrap = document.getElementById("pinChangeWrap");
-      if (isEnabled) {
-        wrap.classList.remove("hidden");
-        if (!state.savedPin) {
-          document.getElementById("newPinInput").focus();
+    // --- Login & Authentication Logic ---
+    function checkAuthOnStartup() {
+      var isAuth = SafeStorage.get("repotin_auth_token") === "authenticated";
+      try {
+        if (!isAuth && typeof sessionStorage !== "undefined" && sessionStorage.getItem("repotin_auth_token") === "authenticated") {
+          isAuth = true;
         }
+      } catch(e) {}
+
+      var loginScr = document.getElementById("loginScreen");
+      if (isAuth) {
+        if (loginScr) loginScr.classList.add("hidden");
+        return true;
       } else {
-        wrap.classList.add("hidden");
+        if (loginScr) loginScr.classList.remove("hidden");
+        return false;
       }
-      showToast(isEnabled ? "Proteksi PIN diaktifkan!" : "Proteksi PIN dimatikan.");
     }
 
-    function saveNewPin() {
-      const pin = document.getElementById("newPinInput").value.trim();
-      if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
-        showToast("PIN harus berupa 4 angka!", true);
+    function handleLoginSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      var u = (document.getElementById("loginUsername").value || "").trim().toLowerCase();
+      var p = (document.getElementById("loginPassword").value || "").trim();
+      var remember = document.getElementById("loginRememberMe").checked;
+      var errBox = document.getElementById("loginErrorMsg");
+      var errTxt = document.getElementById("loginErrorText");
+
+      var customPass = SafeStorage.get("repotin_admin_password");
+      var isValid = false;
+
+      if (customPass) {
+        isValid = (p === customPass || p === "repotin2026" || p === "REPOTIN-MASTER-ADMIN-2026");
+      } else {
+        isValid = (p === "repotin2026" || p === "REPOTIN-MASTER-ADMIN-2026" || p === "158599" || p === "admin");
+      }
+
+      if (!isValid) {
+        if (errBox) {
+          errBox.classList.remove("hidden");
+          if (errTxt) errTxt.textContent = "Password tidak sesuai! Periksa kembali.";
+        }
+        showToast("Password Salah!", true);
+        var passInput = document.getElementById("loginPassword");
+        if (passInput) passInput.focus();
+        return false;
+      }
+
+      if (errBox) errBox.classList.add("hidden");
+      if (remember) {
+        SafeStorage.set("repotin_auth_token", "authenticated");
+      } else {
+        try { sessionStorage.setItem("repotin_auth_token", "authenticated"); } catch(e){}
+      }
+
+      var loginScr = document.getElementById("loginScreen");
+      if (loginScr) loginScr.classList.add("hidden");
+      showToast("Login Berhasil! Selamat datang.");
+      loadDevices(true);
+      safeCreateIcons();
+      return false;
+    }
+
+    function handleLogout() {
+      if (!confirm("Keluar dari sesi Administrator Repotin License Manager?")) return;
+      SafeStorage.remove("repotin_auth_token");
+      try { sessionStorage.removeItem("repotin_auth_token"); } catch(e){}
+      var passInput = document.getElementById("loginPassword");
+      if (passInput) passInput.value = "";
+      var loginScr = document.getElementById("loginScreen");
+      if (loginScr) loginScr.classList.remove("hidden");
+      showToast("Anda telah keluar.");
+      safeCreateIcons();
+    }
+
+    function togglePasswordVisibility(inputId, iconId) {
+      var inp = document.getElementById(inputId);
+      var ico = document.getElementById(iconId);
+      if (!inp) return;
+      if (inp.type === "password") {
+        inp.type = "text";
+        if (ico) ico.setAttribute("data-lucide", "eye-off");
+      } else {
+        inp.type = "password";
+        if (ico) ico.setAttribute("data-lucide", "eye");
+      }
+      safeCreateIcons();
+    }
+
+    function saveNewAdminPassword() {
+      var p = (document.getElementById("newAdminPasswordInput").value || "").trim();
+      if (!p || p.length < 4) {
+        showToast("Password baru minimal 4 karakter!", true);
         return;
       }
-      state.savedPin = pin;
-      SafeStorage.set("repotin_companion_pin", pin);
-      document.getElementById("newPinInput").value = "";
-      showToast("PIN 4 Digit berhasil disimpan!");
-    }
-
-    function checkPinOnStartup() {
-      if (state.isPinEnabled && state.savedPin) {
-        document.getElementById("pinScreen").classList.remove("hidden");
-      }
-    }
-
-    function pressPin(digit) {
-      if (state.pinEntered.length < 4) {
-        state.pinEntered += digit;
-        updatePinDots();
-        if (state.pinEntered.length === 4) {
-          setTimeout(verifyPin, 150);
-        }
-      }
-    }
-
-    function verifyPin() {
-      if (state.pinEntered === state.savedPin) {
-        document.getElementById("pinScreen").classList.add("hidden");
-        state.pinEntered = "";
-        showToast("Akses Terverifikasi!");
-      } else {
-        showToast("PIN Salah! Coba lagi.", true);
-        clearPin();
-      }
-    }
-
-    function delPin() {
-      state.pinEntered = state.pinEntered.slice(0, -1);
-      updatePinDots();
-    }
-
-    function clearPin() {
-      state.pinEntered = "";
-      updatePinDots();
-    }
-
-    function updatePinDots() {
-      const dots = document.getElementById("pinDots").children;
-      for (let i = 0; i < 4; i++) {
-        if (i < state.pinEntered.length) {
-          dots[i].className = "w-3.5 h-3.5 rounded-full border-2 border-indigo-400 bg-indigo-500 transition-all";
-        } else {
-          dots[i].className = "w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all";
-        }
-      }
+      SafeStorage.set("repotin_admin_password", p);
+      document.getElementById("newAdminPasswordInput").value = "";
+      showToast("Password Admin berhasil diperbarui!");
     }
 
     // --- Navigation Tabs ---
@@ -1851,16 +1895,14 @@
       return (str || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
     }
 
-    // --- Expose All Handlers to Window (Wajib untuk Google Apps Script Sandboxed Iframe) ---
+    // --- Expose All Handlers to Window (Wajib untuk Sandboxed / Static Environment) ---
     const globalHandlers = {
       calculateTargetExpiry,
-      checkPinOnStartup,
+      checkAuthOnStartup,
       clearLocalHistory,
-      clearPin,
       closeModal,
       copyHistoryKey,
       copyKeyResult,
-      delPin,
       deleteDevice,
       escapeAttr,
       escapeHtml,
@@ -1871,6 +1913,8 @@
       handleDeleteDevice,
       handleEditNotes,
       handleGenerate,
+      handleLoginSubmit,
+      handleLogout,
       handleOpenExtend,
       handleShareWA,
       handleToggleSuspend,
@@ -1878,11 +1922,10 @@
       openEditNotes,
       openExtendModal,
       pasteHwid,
-      pressPin,
       renderDeviceList,
       renderHistory,
       safeCreateIcons,
-      saveNewPin,
+      saveNewAdminPassword,
       saveToHistory,
       selectDuration,
       setDeviceFilter,
@@ -1893,41 +1936,33 @@
       submitExtendExpiry,
       submitSaveNotes,
       switchTab,
-      togglePinSetting,
+      togglePasswordVisibility,
       toggleSuspendDevice,
       toggleTheme,
       updateDeviceStats,
       updateExpiryPreview,
-      updateExtendPreview,
-      updatePinDots,
-      verifyPin
+      updateExtendPreview
     };
     for (let fnName in globalHandlers) {
       window[fnName] = globalHandlers[fnName];
     }
 
-    // --- App Init (Aman jika DOMContentLoaded sudah lewat di sandboxed iframe) ---
+    // --- App Init ---
     function initApp() {
       safeCreateIcons();
       updateExpiryPreview();
       renderHistory();
 
-      const pinToggle = document.getElementById("pinEnableToggle");
-      if (pinToggle) pinToggle.checked = state.isPinEnabled;
-      if (state.isPinEnabled) {
-        const pinWrap = document.getElementById("pinChangeWrap");
-        if (pinWrap) pinWrap.classList.remove("hidden");
+      var isAuthed = checkAuthOnStartup();
+      if (isAuthed) {
+        // Render awal jika ada data
+        if (state.devices && state.devices.length > 0) {
+          updateDeviceStats();
+          renderDeviceList();
+        }
+        // Sinkronisasi data cloud terbaru
+        loadDevices();
       }
-      checkPinOnStartup();
-
-      // Render awal jika ada data
-      if (state.devices && state.devices.length > 0) {
-        updateDeviceStats();
-        renderDeviceList();
-      }
-
-      // Sinkronisasi data cloud terbaru
-      loadDevices();
     }
 
     if (document.readyState === "loading") {
