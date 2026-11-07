@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Repotin Companion - Mobile Admin</title>
+
+  <!-- Web App / PWA Meta -->
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Repotin Admin">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input,
+    textarea {
+      user-select: text;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+  <!-- DIAGNOSTIC ERROR BANNER (Muncul otomatis jika ada error JS di browser HP) -->
+  <div id="diagBanner"
+    class="fixed top-0 left-0 right-0 z-[9999] bg-rose-600 text-white p-3 text-xs font-mono shadow-2xl hidden flex-col gap-1">
+    <div class="font-bold flex items-center justify-between">
+      <span>⚠️ TERDETEKSI ERROR JAVASCRIPT:</span>
+      <button onclick="document.getElementById('diagBanner').classList.add('hidden')"
+        class="px-2 py-0.5 bg-rose-800 hover:bg-rose-900 rounded text-[10px]">Tutup</button>
+    </div>
+    <div id="diagMsg" class="break-all whitespace-pre-wrap text-[11px] bg-rose-950/80 p-2 rounded"></div>
+  </div>
+  <script>
+    window.onerror = function (msg, url, line, col, error) {
+      var b = document.getElementById('diagBanner');
+      var m = document.getElementById('diagMsg');
+      if (b && m) {
+        b.classList.remove('hidden');
+        b.style.display = 'flex';
+        var src = url ? url.split('/').pop() : 'inline';
+        m.textContent = (msg || 'Error') + '\nSumber: ' + src + ' (Baris ' + line + ', Kolom ' + col + ')' + (error && error.stack ? '\n' + error.stack : '');
+        
+        try {
+          fetch(window.location.href)
+            .then(function(r) { return r.text(); })
+            .then(function(html) {
+              var lines = html.split('\n');
+              var targetLine = parseInt(line, 10);
+              if (isNaN(targetLine)) return;
+              var s = Math.max(0, targetLine - 5);
+              var e = Math.min(lines.length, targetLine + 5);
+              var out = '\n\n--- KODE SEKITAR BARIS ' + targetLine + ' ---\n';
+              for (var i = s; i < e; i++) {
+                var marker = (i + 1 === targetLine) ? ' >> ' : '    ';
+                out += marker + (i + 1) + ': ' + lines[i] + '\n';
+              }
+              m.textContent += out;
+            })
+            .catch(function(err) {
+              m.textContent += '\n(Gagal fetch source: ' + err + ')';
+            });
+        } catch (e) {}
+      }
+    };
+    window.onunhandledrejection = function (e) {
+      var b = document.getElementById('diagBanner');
+      var m = document.getElementById('diagMsg');
+      if (b && m) {
+        b.classList.remove('hidden');
+        b.style.display = 'flex';
+        m.textContent = 'Unhandled Promise Rejection:\n' + (e.reason ? (e.reason.stack || e.reason.message || e.reason) : e);
+      }
+    };
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PIN LOCK SCREEN (Proteksi Akses di HP)                               -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div id="pinScreen" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-6 hidden">
+    <div
+      class="w-16 h-16 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-4 text-indigo-400">
+      <i data-lucide="shield-check" class="w-8 h-8"></i>
+    </div>
+    <h2 class="text-xl font-bold text-white mb-1">Repotin Companion</h2>
+    <p class="text-xs text-slate-400 mb-6">Masukkan PIN Keamanan Admin Anda</p>
+
+    <div id="pinDots" class="flex gap-3 mb-8">
+      <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all"></div>
+      <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all"></div>
+      <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all"></div>
+      <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all"></div>
+    </div>
+
+    <!-- Keypad -->
+    <div class="grid grid-cols-3 gap-3.5 max-w-xs w-full">
+      <button onclick="pressPin('1')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">1</button>
+      <button onclick="pressPin('2')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">2</button>
+      <button onclick="pressPin('3')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">3</button>
+      <button onclick="pressPin('4')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">4</button>
+      <button onclick="pressPin('5')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">5</button>
+      <button onclick="pressPin('6')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">6</button>
+      <button onclick="pressPin('7')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">7</button>
+      <button onclick="pressPin('8')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">8</button>
+      <button onclick="pressPin('9')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">9</button>
+      <button onclick="clearPin()"
+        class="h-14 rounded-2xl bg-slate-900/40 text-slate-400 active:scale-95 text-xs font-semibold uppercase transition-all">Reset</button>
+      <button onclick="pressPin('0')"
+        class="h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xl font-bold text-white active:scale-95 transition-all">0</button>
+      <button onclick="delPin()"
+        class="h-14 rounded-2xl bg-slate-900/40 text-slate-400 active:scale-95 flex items-center justify-center transition-all">
+        <i data-lucide="delete" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- HEADER                                                              -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-xl border-b border-slate-800/80 px-4 py-3">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div
+          class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 p-0.5 shadow-md shadow-indigo-500/20">
+          <div
+            class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-white font-black text-sm">
+            R
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-sm font-extrabold text-white tracking-tight leading-none">Repotin Companion</h1>
+            <span
+              class="text-[9px] font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/20 px-1.5 py-0.2 rounded-md">GAS
+              Cloud</span>
+          </div>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span id="connIndicator" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="connText" class="text-[10px] text-slate-400 font-medium">Cloud 24/7 Aktif</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1">
+        <button onclick="loadDevices(true)" id="refreshBtn" title="Segarkan Data"
+          class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-90 transition-all">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+        </button>
+        <button onclick="toggleTheme()" id="themeBtn" title="Ganti Tema"
+          class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-90 transition-all">
+          <i data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- TOP SEGMENTED NAVIGATION TABS (Selalu Terlihat di Layar Atas)       -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <nav class="sticky top-0 z-30 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/80 px-3 py-2">
+    <div
+      class="max-w-md mx-auto grid grid-cols-4 gap-1 p-1 bg-slate-900 border border-slate-800 rounded-2xl shadow-inner">
+      <button type="button" onclick="switchTab('devices')" id="top-nav-devices"
+        class="top-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 bg-indigo-600 text-white shadow-md active:scale-95 cursor-pointer">
+        <div class="flex items-center gap-1">
+          <i data-lucide="database" class="w-3.5 h-3.5 text-emerald-300"></i>
+          <span id="topBadgeDeviceCount"
+            class="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-emerald-400 text-slate-950 leading-none">0</span>
+        </div>
+        <span class="text-[10px]">Lisensi Toko</span>
+      </button>
+
+      <button type="button" onclick="switchTab('keygen')" id="top-nav-keygen"
+        class="top-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white active:scale-95 cursor-pointer">
+        <i data-lucide="key-round" class="w-4 h-4"></i>
+        <span class="text-[10px]">Kunci Baru</span>
+      </button>
+
+      <button type="button" onclick="switchTab('history')" id="top-nav-history"
+        class="top-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white active:scale-95 cursor-pointer">
+        <i data-lucide="history" class="w-4 h-4"></i>
+        <span class="text-[10px]">Riwayat</span>
+      </button>
+
+      <button type="button" onclick="switchTab('settings')" id="top-nav-settings"
+        class="top-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white active:scale-95 cursor-pointer">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+        <span class="text-[10px]">Setelan</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- MAIN SCROLLABLE CONTENT                                             -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <main class="flex-1 max-w-md w-full mx-auto p-4 pb-24 overflow-y-auto custom-scrollbar">
+
+    <!-- ── TAB 1: KUNCI BARU (KEY GENERATOR) ── -->
+    <section id="tab-keygen" class="tab-content hidden space-y-4">
+
+      <!-- Quick Link to Devices Banner -->
+      <div onclick="switchTab('devices')"
+        class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-indigo-950/40 border border-emerald-500/30 rounded-2xl p-3 shadow-lg flex items-center justify-between cursor-pointer active:scale-98 transition-all">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            <i data-lucide="database" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white flex items-center gap-1.5">
+              <span>Database Lisensi Toko</span>
+              <span id="quickCountBadge"
+                class="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-emerald-500 text-slate-950">0</span>
+            </div>
+            <div class="text-[10px] text-slate-400">Ketuk untuk kelola &amp; monitoring lisensi aktif</div>
+          </div>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-emerald-400"></i>
+      </div>
+
+      <!-- Input Card -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <i data-lucide="key-round" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h2 class="text-xs font-bold text-white">Generate Kunci Aktivasi</h2>
+              <p class="text-[10px] text-slate-400">Buat lisensi resmi untuk perangkat toko</p>
+            </div>
+          </div>
+          <span
+            class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
+            FNV-1a 64-bit
+          </span>
+        </div>
+
+        <!-- Machine Hardware ID -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-[11px] font-bold text-slate-300">Machine Hardware ID Toko</label>
+            <button onclick="pasteHwid()"
+              class="text-[10px] text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
+              <i data-lucide="clipboard" class="w-3 h-3"></i> Tempel
+            </button>
+          </div>
+          <input id="hwidInput" type="text" placeholder="Contoh: RP-CTADM2-FDBF"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-white font-mono text-xs uppercase tracking-wider focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-inner"
+            oninput="this.value = this.value.toUpperCase()" />
+        </div>
+
+        <!-- Catatan / Nama Toko / PIC -->
+        <div>
+          <label class="text-[11px] font-bold text-slate-300 block mb-1">
+            Catatan / Nama Toko & PIC <span class="text-slate-500 font-normal">(Opsional)</span>
+          </label>
+          <input id="notesInput" type="text" placeholder="Contoh: Kutabumi F703 - Kasir 1 (Andi)"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-white text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-inner" />
+        </div>
+
+        <!-- Durasi Masa Berlaku -->
+        <div>
+          <label class="text-[11px] font-bold text-slate-300 block mb-1.5">Masa Berlaku Lisensi</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="selectDuration('1m')"
+              class="dur-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-indigo-600 border-indigo-500 text-white"
+              data-dur="1m">1 Bulan</button>
+            <button type="button" onclick="selectDuration('3m')"
+              class="dur-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700"
+              data-dur="3m">3 Bulan</button>
+            <button type="button" onclick="selectDuration('6m')"
+              class="dur-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700"
+              data-dur="6m">6 Bulan</button>
+            <button type="button" onclick="selectDuration('1y')"
+              class="dur-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700"
+              data-dur="1y">1 Tahun</button>
+            <button type="button" onclick="selectDuration('custom')"
+              class="dur-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700"
+              data-dur="custom">Kustom</button>
+            <button type="button" onclick="selectDuration('lifetime')"
+              class="dur-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700"
+              data-dur="lifetime">Lifetime</button>
+          </div>
+
+          <!-- Custom Date Input -->
+          <div id="customDateWrap" class="mt-2 hidden">
+            <label class="text-[10px] text-slate-400 block mb-1">Pilih Tanggal Berakhir:</label>
+            <input id="customDateInput" type="date"
+              class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:border-indigo-500"
+              onchange="updateExpiryPreview()" />
+          </div>
+
+          <div class="mt-2 flex items-center justify-between text-[11px] px-1">
+            <span class="text-slate-400">Kedaluwarsa pada:</span>
+            <span id="expiryPreviewText" class="font-mono font-bold text-indigo-400">-</span>
+          </div>
+        </div>
+
+        <!-- Pre-Register Toggle -->
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+          <div class="flex items-center gap-2">
+            <i data-lucide="database" class="w-4 h-4 text-emerald-400"></i>
+            <div>
+              <div class="text-[11px] font-bold text-white">Daftarkan ke Supabase</div>
+              <div class="text-[9px] text-slate-400">Otomatis simpan HWID & catatan toko ke cloud</div>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="preRegisterToggle" type="checkbox" checked class="sr-only peer">
+            <div
+              class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500">
+            </div>
+          </label>
+        </div>
+
+        <!-- Action Button -->
+        <button onclick="handleGenerate()" id="btnGenerate"
+          class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2">
+          <i data-lucide="key-round" class="w-4 h-4"></i>
+          <span>GENERATE KUNCI AKTIVASI</span>
+        </button>
+      </div>
+
+      <!-- Quick Jump to Database Card -->
+      <div
+        class="p-3 bg-gradient-to-r from-indigo-950/70 via-slate-900 to-slate-950 border border-indigo-500/30 rounded-2xl flex items-center justify-between shadow-lg">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white">Kelola Lisensi Toko</div>
+            <div class="text-[10px] text-slate-400">
+              Lihat <span id="quickCountBadge" class="font-mono font-bold text-emerald-400">0</span> lisensi tersimpan
+              di Supabase
+            </div>
+          </div>
+        </div>
+        <button type="button" onclick="switchTab('devices')"
+          class="py-1.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xs font-bold flex items-center gap-1 transition-all shadow-md shadow-indigo-600/25 cursor-pointer">
+          <span>Buka Lisensi</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- Result Card -->
+      <div id="resultCard"
+        class="hidden bg-gradient-to-b from-slate-900 to-slate-950 border border-indigo-500/30 rounded-2xl p-4 shadow-2xl space-y-3 animate-in fade-in slide-in-from-bottom-2">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+          <div class="flex items-center gap-1.5 text-emerald-400">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            <span class="text-xs font-bold">Kunci Lisensi Siap Digunakan</span>
+          </div>
+          <span id="resStatusBadge"
+            class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            Tersimpan
+          </span>
+        </div>
+
+        <!-- Key Display Box -->
+        <div class="p-3 bg-slate-950 rounded-xl border border-indigo-500/20 text-center select-all">
+          <div class="text-[10px] text-slate-400 uppercase font-semibold mb-1">Kode Lisensi Resmi Repotin:</div>
+          <div id="resKeyCode"
+            class="font-mono text-base font-extrabold text-white tracking-widest text-indigo-300 select-all">
+            EDS-XXXXXXXX-XXXX
+          </div>
+        </div>
+
+        <!-- Details Info -->
+        <div class="space-y-1 text-[11px] bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+          <div class="flex justify-between">
+            <span class="text-slate-400">HWID Perangkat:</span>
+            <span id="resHwid" class="font-mono text-white font-semibold">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Catatan / Toko:</span>
+            <span id="resNotes" class="text-white font-medium">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Masa Berlaku:</span>
+            <span id="resExpiry" class="text-emerald-400 font-semibold">-</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button onclick="copyKeyResult()"
+            class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span id="btnCopyLabel">Salin Kunci</span>
+          </button>
+          <button onclick="shareToWhatsApp()"
+            class="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-md shadow-emerald-600/20">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+            <span>Kirim via WA</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── TAB 2: MONITORING PERANGKAT (DATABASE) ── -->
+    <section id="tab-devices" class="tab-content space-y-3">
+
+      <!-- Section Title Banner -->
+      <div
+        class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-slate-800 rounded-2xl p-3.5 shadow-lg flex items-center justify-between">
+        <div>
+          <h2 class="text-xs font-extrabold text-white flex items-center gap-1.5">
+            <i data-lucide="database" class="w-4 h-4 text-emerald-400"></i>
+            <span>Daftar Lisensi Supabase</span>
+          </h2>
+          <p class="text-[10px] text-slate-400">Monitoring &amp; manajemen lisensi aktif 24/7</p>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="switchTab('keygen')"
+            class="px-2.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 active:scale-95 transition-all shadow-md cursor-pointer"
+            title="Buat Lisensi Baru">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span>Kunci Baru</span>
+          </button>
+          <button type="button" onclick="loadDevices(true)"
+            class="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs active:scale-95 transition-all border border-slate-700 cursor-pointer"
+            title="Muat Ulang dari Supabase">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Counter -->
+      <div class="grid grid-cols-4 gap-2">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-center">
+          <div id="statTotal" class="text-base font-extrabold text-white">0</div>
+          <div class="text-[9px] text-slate-400 font-medium">Total</div>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-center">
+          <div id="statActive" class="text-base font-extrabold text-emerald-400">0</div>
+          <div class="text-[9px] text-slate-400 font-medium">Aktif</div>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-center">
+          <div id="statExpired" class="text-base font-extrabold text-rose-400">0</div>
+          <div class="text-[9px] text-slate-400 font-medium">Expired</div>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-center">
+          <div id="statSuspended" class="text-base font-extrabold text-amber-400">0</div>
+          <div class="text-[9px] text-slate-400 font-medium">Blokir</div>
+        </div>
+      </div>
+
+      <!-- Search & Filter Controls -->
+      <div class="space-y-2">
+        <div class="relative">
+          <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3"></i>
+          <input id="deviceSearchInput" type="text" placeholder="Cari HWID, Kode, Toko, IP..." oninput="filterDevices()"
+            class="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-indigo-500 shadow-inner" />
+        </div>
+
+        <div class="flex gap-1 overflow-x-auto pb-1 custom-scrollbar text-[10px]">
+          <button onclick="setDeviceFilter('all')"
+            class="dev-filter-chip px-3 py-1 rounded-lg font-semibold bg-indigo-600 text-white"
+            data-filter="all">Semua</button>
+          <button onclick="setDeviceFilter('active')"
+            class="dev-filter-chip px-3 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 border border-slate-800"
+            data-filter="active">Aktif</button>
+          <button onclick="setDeviceFilter('expired')"
+            class="dev-filter-chip px-3 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 border border-slate-800"
+            data-filter="expired">Expired</button>
+          <button onclick="setDeviceFilter('suspended')"
+            class="dev-filter-chip px-3 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 border border-slate-800"
+            data-filter="suspended">Blokir</button>
+        </div>
+      </div>
+
+      <!-- Device List Container -->
+      <div id="deviceListContainer" class="space-y-2.5">
+        <div class="text-center py-10 text-slate-500 text-xs flex flex-col items-center gap-2">
+          <div class="w-8 h-8 rounded-full border-2 border-indigo-500/20 border-t-indigo-500 animate-spin"></div>
+          <span>Memuat data perangkat dari cloud...</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── TAB 3: RIWAYAT GENERATE LOKAL ── -->
+    <section id="tab-history" class="tab-content hidden space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xs font-bold text-white">Riwayat Lisensi Dihasilkan</h2>
+          <p class="text-[10px] text-slate-400">Tersimpan di memori lokal HP ini</p>
+        </div>
+        <button onclick="clearLocalHistory()"
+          class="text-[10px] text-rose-400 hover:text-rose-300 font-semibold px-2 py-1 rounded-lg hover:bg-rose-500/10">
+          Hapus Semua
+        </button>
+      </div>
+
+      <div id="historyListContainer" class="space-y-2">
+        <div class="text-center py-10 text-slate-500 text-xs">Belum ada riwayat kunci yang dihasilkan.</div>
+      </div>
+    </section>
+
+    <!-- ── TAB 4: SETELAN & PANDUAN ── -->
+    <section id="tab-settings" class="tab-content hidden space-y-3">
+
+      <!-- PIN Security Setting -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+        <div class="flex items-center gap-2">
+          <div class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h2 class="text-xs font-bold text-white">Kunci PIN Keamanan HP</h2>
+            <p class="text-[10px] text-slate-400">Proteksi aplikasi agar tidak dibuka orang lain</p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-slate-800">
+          <span class="text-xs text-slate-300 font-semibold">Aktifkan Kunci PIN 4 Digit</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="pinEnableToggle" type="checkbox" onchange="togglePinSetting()" class="sr-only peer">
+            <div
+              class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600">
+            </div>
+          </label>
+        </div>
+
+        <div id="pinChangeWrap" class="space-y-2 hidden">
+          <label class="text-[10px] text-slate-400 block">Atur 4 Digit PIN Baru:</label>
+          <div class="flex gap-2">
+            <input id="newPinInput" type="password" maxlength="4" pattern="[0-9]*" inputmode="numeric"
+              placeholder="4 digit"
+              class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-center font-mono text-base tracking-widest text-white focus:outline-none focus:border-indigo-500" />
+            <button onclick="saveNewPin()"
+              class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shrink-0">
+              Simpan
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cloud Status & Info -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+        <div class="flex items-center gap-2">
+          <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <i data-lucide="cloud" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h2 class="text-xs font-bold text-white">Status Cloud & Deployment</h2>
+            <p class="text-[10px] text-slate-400">GitHub Pages CDN + Supabase REST API</p>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 text-xs">
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800/80">
+            <span class="text-slate-400">Hosting Web App:</span>
+            <span class="font-bold text-white">GitHub Pages (Fast HTTPS CDN)</span>
+          </div>
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800/80">
+            <span class="text-slate-400">Database Toko:</span>
+            <span class="font-bold text-emerald-400">Supabase Connected</span>
+          </div>
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800/80">
+            <span class="text-slate-400">Ketersediaan:</span>
+            <span class="font-bold text-indigo-400">24/7 Mobile & Desktop Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guide Add to Home Screen -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-2.5">
+        <div class="flex items-center gap-2 text-white font-bold text-xs">
+          <i data-lucide="smartphone" class="w-4 h-4 text-indigo-400"></i>
+          <span>Pasang ke Layar Utama HP (PWA)</span>
+        </div>
+        <p class="text-[11px] text-slate-300 leading-relaxed">
+          Agar bisa dibuka seperti aplikasi asli tanpa bar browser:
+        </p>
+        <ul class="text-[11px] text-slate-400 space-y-1.5 list-disc list-inside">
+          <li><strong>iOS (Safari):</strong> Ketuk tombol <em>Share</em> (kotak panah ke atas) &gt; pilih <em>Add to
+              Home Screen</em>.</li>
+          <li><strong>Android (Chrome):</strong> Ketuk menu titik tiga di kanan atas &gt; pilih <em>Tambahkan ke Layar
+              Utama</em> (Install App).</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- BOTTOM NAVIGATION BAR                                               -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <nav
+    class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-xl border-t border-slate-800/80 px-2 py-1.5">
+    <div class="max-w-md mx-auto grid grid-cols-4 gap-1">
+      <button onclick="switchTab('devices')" id="nav-devices"
+        class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-indigo-400 font-semibold active:scale-95 transition-all relative">
+        <i data-lucide="database" class="w-5 h-5 mb-0.5 text-emerald-400"></i>
+        <span class="text-[10px]">Lisensi</span>
+        <span id="badgeActiveCount" class="hidden absolute top-1 right-5 w-2 h-2 rounded-full bg-emerald-500"></span>
+      </button>
+
+      <button onclick="switchTab('keygen')" id="nav-keygen"
+        class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-400 font-semibold active:scale-95 transition-all">
+        <i data-lucide="key-round" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px]">Kunci Baru</span>
+      </button>
+
+      <button onclick="switchTab('history')" id="nav-history"
+        class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-400 font-semibold active:scale-95 transition-all">
+        <i data-lucide="history" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px]">Riwayat</span>
+      </button>
+
+      <button onclick="switchTab('settings')" id="nav-settings"
+        class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-400 font-semibold active:scale-95 transition-all">
+        <i data-lucide="settings" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px]">Setelan</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- MODAL: EDIT CATATAN TOKO / USER                                     -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div id="modalEditNotes"
+    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 hidden animate-in fade-in">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-4 space-y-3 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="edit-3" class="w-4 h-4 text-indigo-400"></i>
+          <span>Ubah Catatan / Nama Toko</span>
+        </h3>
+        <button onclick="closeModal('modalEditNotes')" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div>
+        <div class="text-[10px] text-slate-400 mb-1">Perangkat: <span id="modalNotesHwid"
+            class="font-mono text-white font-bold"></span></div>
+        <input id="modalNotesInput" type="text" placeholder="Contoh: Kutabumi F703 - Kasir 1"
+          class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500" />
+      </div>
+
+      <div class="flex gap-2 pt-1">
+        <button onclick="closeModal('modalEditNotes')"
+          class="flex-1 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">
+          Batal
+        </button>
+        <button onclick="submitSaveNotes()" id="btnSaveNotes"
+          class="flex-1 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">
+          Simpan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- MODAL: PERPANJANG MASA BERLAKU                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div id="modalExtendExpiry"
+    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 hidden animate-in fade-in">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-4 space-y-3 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="calendar-plus" class="w-4 h-4 text-emerald-400"></i>
+          <span>Perpanjang Masa Berlaku Lisensi</span>
+        </h3>
+        <button onclick="closeModal('modalExtendExpiry')" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2">
+        <div class="text-[10px] text-slate-400">Perangkat: <span id="modalExtendHwid"
+            class="font-mono text-white font-bold"></span></div>
+
+        <label class="text-[11px] font-bold text-slate-300 block">Pilih Durasi Tambahan:</label>
+        <div class="grid grid-cols-3 gap-1.5">
+          <button type="button" onclick="setExtendDuration('1m')"
+            class="ext-btn px-2 py-1.5 rounded-lg text-xs font-semibold border bg-indigo-600 border-indigo-500 text-white"
+            data-ext="1m">+1 Bulan</button>
+          <button type="button" onclick="setExtendDuration('3m')"
+            class="ext-btn px-2 py-1.5 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-300"
+            data-ext="3m">+3 Bulan</button>
+          <button type="button" onclick="setExtendDuration('6m')"
+            class="ext-btn px-2 py-1.5 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-300"
+            data-ext="6m">+6 Bulan</button>
+          <button type="button" onclick="setExtendDuration('1y')"
+            class="ext-btn px-2 py-1.5 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-300"
+            data-ext="1y">+1 Tahun</button>
+          <button type="button" onclick="setExtendDuration('lifetime')"
+            class="ext-btn px-2 py-1.5 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-300"
+            data-ext="lifetime">Lifetime</button>
+          <button type="button" onclick="setExtendDuration('custom')"
+            class="ext-btn px-2 py-1.5 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-300"
+            data-ext="custom">Kustom</button>
+        </div>
+
+        <div id="modalExtendCustomWrap" class="hidden pt-1">
+          <input id="modalExtendCustomDate" type="date"
+            class="w-full px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-mono"
+            onchange="updateExtendPreview()" />
+        </div>
+
+        <div class="p-2 rounded-xl bg-slate-950 text-[11px] flex justify-between border border-slate-800">
+          <span class="text-slate-400">Tanggal Baru:</span>
+          <span id="modalExtendPreview" class="font-mono font-bold text-emerald-400">-</span>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-1">
+        <button onclick="closeModal('modalExtendExpiry')"
+          class="flex-1 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">
+          Batal
+        </button>
+        <button onclick="submitExtendExpiry()" id="btnSaveExtend"
+          class="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold">
+          Terapkan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- TOAST NOTIFICATION                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div id="toast"
+    class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 border border-slate-700 text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 text-xs opacity-0 translate-y-2 pointer-events-none transition-all duration-300 max-w-xs w-full">
+    <i id="toastIcon" data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+    <span id="toastMsg" class="flex-1 leading-tight font-medium">Berhasil</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- JAVASCRIPT LOGIC (ES5-compatible: no template literals / backticks) -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+    // --- Configuration ---
+    const CONFIG = {
+      supabaseUrl: "https://wjcoecwcqbnilrrbzxtn.supabase.co",
+      supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndqY29lY3djcWJuaWxycmJ6eHRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2Mzg1NDUsImV4cCI6MjEwMjIxNDU0NX0.TAD85YqEOylxMKLEgkcfUrOw7BZXA-d8whoajW0E7hA",
+      salt: "REPOTIN_STORE_LICENSE_SALT_2026_KLG_SECURE"
+    };
+
+    var INJECTED_DEVICES = [];
+
+    // --- Safe Storage (Fallback Memori jika localStorage diblokir di sandboxed iframe) ---
+    const memoryStore = {};
+    const SafeStorage = {
+      get: function (key) {
+        try {
+          if (typeof window !== "undefined" && "localStorage" in window && window.localStorage) {
+            return window.localStorage.getItem(key);
+          }
+        } catch (e) { }
+        return memoryStore[key] || null;
+      },
+      set: function (key, val) {
+        try {
+          if (typeof window !== "undefined" && "localStorage" in window && window.localStorage) {
+            window.localStorage.setItem(key, val);
+          }
+        } catch (e) { }
+        memoryStore[key] = String(val);
+      },
+      remove: function (key) {
+        try {
+          if (typeof window !== "undefined" && "localStorage" in window && window.localStorage) {
+            window.localStorage.removeItem(key);
+          }
+        } catch (e) { }
+        delete memoryStore[key];
+      }
+    };
+
+    // Safe Lucide icon initializer
+    function safeCreateIcons() {
+      try {
+        if (typeof lucide !== "undefined" && lucide && typeof lucide.createIcons === "function") {
+          lucide.createIcons();
+        }
+      } catch (e) {
+        console.warn("Lucide icon init warning:", e);
+      }
+    }
+
+    let savedHistory = [];
+    try {
+      const rawHist = SafeStorage.get("repotin_key_history");
+      if (rawHist) savedHistory = JSON.parse(rawHist);
+    } catch (e) { }
+
+    // App State
+    const state = {
+      activeTab: "devices",
+      selectedDuration: "1m",
+      devices: Array.isArray(INJECTED_DEVICES) ? INJECTED_DEVICES : [],
+      deviceFilter: "all",
+      deviceSearch: "",
+      currentGenerated: null,
+      editingHwid: "",
+      extendingHwid: "",
+      extendDuration: "1m",
+      pinEntered: "",
+      savedPin: SafeStorage.get("repotin_companion_pin") || "",
+      isPinEnabled: SafeStorage.get("repotin_pin_enabled") === "true",
+      history: savedHistory
+    };
+
+    // --- FNV-1a 64-bit License Keygen Algorithm ---
+    function generateLicenseKeyLocal(machineId, expiryDate) {
+      const cleanId = (machineId || "").trim().toUpperCase().replace(/-/g, "").replace(/\s+/g, "");
+      const prime = BigInt("0x100000001b3");
+      const mask64 = BigInt("0xFFFFFFFFFFFFFFFF");
+
+      if (expiryDate && expiryDate.trim()) {
+        const cleanExp = expiryDate.trim().replace(/-/g, ""); // YYYYMMDD
+        var input = cleanId + ":" + cleanExp + ":" + CONFIG.salt;
+        let hash = BigInt("0xcbf29ce484222325");
+        for (let i = 0; i < input.length; i++) {
+          hash ^= BigInt(input.charCodeAt(i));
+          hash = (hash * prime) & mask64;
+        }
+        const hex = (hash & BigInt("0xFFFFFFFF")).toString(16).toUpperCase().padStart(8, "0");
+        return "EDS-" + cleanExp + "-" + hex.slice(0, 4) + "-" + hex.slice(4, 8);
+      } else {
+        var input = cleanId + ":" + CONFIG.salt;
+        let hash = BigInt("0xcbf29ce484222325");
+        for (let i = 0; i < input.length; i++) {
+          hash ^= BigInt(input.charCodeAt(i));
+          hash = (hash * prime) & mask64;
+        }
+        const hex = (hash & BigInt("0xFFFFFFFFFFFF")).toString(16).toUpperCase().padStart(12, "0");
+        return "EDS-" + hex.slice(0, 4) + "-" + hex.slice(4, 8) + "-" + hex.slice(8, 12);
+      }
+    }
+
+    // --- Tab 1: Keygen Handlers ---
+    function selectDuration(dur) {
+      state.selectedDuration = dur;
+      document.querySelectorAll(".dur-btn").forEach(btn => {
+        if (btn.dataset.dur === dur) {
+          btn.className = "dur-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-indigo-600 border-indigo-500 text-white";
+        } else {
+          btn.className = "dur-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700";
+        }
+      });
+
+      const wrap = document.getElementById("customDateWrap");
+      if (dur === "custom") {
+        wrap.classList.remove("hidden");
+        if (!document.getElementById("customDateInput").value) {
+          const d = new Date();
+          d.setMonth(d.getMonth() + 1);
+          document.getElementById("customDateInput").value = d.toISOString().slice(0, 10);
+        }
+      } else {
+        wrap.classList.add("hidden");
+      }
+      updateExpiryPreview();
+    }
+
+    function calculateTargetExpiry(dur) {
+      if (dur === "lifetime") return null;
+      if (dur === "custom") {
+        return document.getElementById("customDateInput").value || null;
+      }
+      const d = new Date();
+      if (dur === "1m") d.setDate(d.getDate() + 30);
+      else if (dur === "3m") d.setDate(d.getDate() + 90);
+      else if (dur === "6m") d.setDate(d.getDate() + 180);
+      else if (dur === "1y") d.setFullYear(d.getFullYear() + 1);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function updateExpiryPreview() {
+      const exp = calculateTargetExpiry(state.selectedDuration);
+      const el = document.getElementById("expiryPreviewText");
+      if (exp) {
+        el.textContent = exp + " (" + formatRelativeDays(exp) + ")";
+        el.className = "font-mono font-bold text-indigo-400";
+      } else {
+        el.textContent = "Permanen (Lifetime)";
+        el.className = "font-mono font-bold text-emerald-400";
+      }
+    }
+
+    async function pasteHwid() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          document.getElementById("hwidInput").value = text.trim().toUpperCase();
+          showToast("HWID berhasil ditempel!");
+        }
+      } catch (e) {
+        showToast("Gagal membaca clipboard. Tempel manual.", true);
+      }
+    }
+
+    async function handleGenerate() {
+      const hwid = document.getElementById("hwidInput").value.trim().toUpperCase();
+      const notes = document.getElementById("notesInput").value.trim();
+      const shouldPreRegister = document.getElementById("preRegisterToggle").checked;
+
+      if (!hwid || hwid.length < 5) {
+        showToast("Masukkan Machine Hardware ID yang valid!", true);
+        return;
+      }
+
+      const expiryDate = calculateTargetExpiry(state.selectedDuration);
+      const btn = document.getElementById("btnGenerate");
+      btn.disabled = true;
+      btn.innerHTML = '<div class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div><span>Membuat Kunci...</span>';
+
+      try {
+        const licenseCode = generateLicenseKeyLocal(hwid, expiryDate);
+
+        // Register to Supabase if toggle is enabled
+        let registered = false;
+        if (shouldPreRegister) {
+          try {
+            const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations", {
+              method: "POST",
+              headers: {
+                "apikey": CONFIG.supabaseKey,
+                "Authorization": "Bearer " + CONFIG.supabaseKey,
+                "Content-Type": "application/json",
+                "Prefer": "resolution=merge-duplicates"
+              },
+              body: JSON.stringify({
+                machine_id: hwid,
+                registration_code: licenseCode,
+                valid_until: expiryDate,
+                notes: notes || null,
+                status: "active",
+                device_ip: "Mobile Cloud",
+                updated_at: new Date().toISOString()
+              })
+            });
+            if (res.ok) registered = true;
+          } catch (e) {
+            console.warn("Direct register error:", e);
+          }
+        }
+
+        // Save to state & local history
+        state.currentGenerated = {
+          hwid,
+          code: licenseCode,
+          notes,
+          validUntil: expiryDate,
+          createdAt: new Date().toISOString()
+        };
+
+        saveToHistory(state.currentGenerated);
+
+        // Display Result Card
+        document.getElementById("resKeyCode").textContent = licenseCode;
+        document.getElementById("resHwid").textContent = hwid;
+        document.getElementById("resNotes").textContent = notes || "(Tanpa Catatan)";
+        document.getElementById("resExpiry").textContent = expiryDate ? (expiryDate + " (" + formatRelativeDays(expiryDate) + ")") : "Permanen (Lifetime)";
+
+        const badge = document.getElementById("resStatusBadge");
+        if (shouldPreRegister) {
+          badge.textContent = registered ? "Tersimpan di Cloud" : "Gagal Sync Cloud";
+          badge.className = registered ? "text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" : "text-[9px] px-2 py-0.5 rounded-full font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30";
+        } else {
+          badge.textContent = "Offline Key";
+          badge.className = "text-[9px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-300 border border-slate-700";
+        }
+
+        document.getElementById("resultCard").classList.remove("hidden");
+        document.getElementById("resultCard").scrollIntoView({ behavior: "smooth" });
+        showToast("Kunci aktivasi berhasil dibuat!");
+      } catch (err) {
+        showToast("Error: " + (err.message || err.toString()), true);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="key-round" class="w-4 h-4"></i><span>GENERATE KUNCI AKTIVASI</span>';
+        safeCreateIcons();
+      }
+    }
+
+    function copyKeyResult() {
+      if (!state.currentGenerated) return;
+      navigator.clipboard.writeText(state.currentGenerated.code);
+      document.getElementById("btnCopyLabel").textContent = "Tersalin!";
+      setTimeout(() => {
+        document.getElementById("btnCopyLabel").textContent = "Salin Kunci";
+      }, 2000);
+      showToast("Kunci berhasil disalin ke clipboard!");
+    }
+
+    function shareToWhatsApp() {
+      if (!state.currentGenerated) return;
+      const g = state.currentGenerated;
+      const expText = g.validUntil ? (g.validUntil + " (" + formatRelativeDays(g.validUntil) + ")") : "Permanen (Lifetime)";
+      var text = "*KUNCI AKTIVASI REPOT.IN RESMI*\n"
+        + "----------------------------------------\n"
+        + "*Machine ID:* " + g.hwid + "\n"
+        + "*Toko / User:* " + (g.notes || '-') + "\n"
+        + "*Kunci Lisensi:* " + String.fromCharCode(96) + g.code + String.fromCharCode(96) + "\n"
+        + "*Masa Berlaku:* " + expText + "\n"
+        + "----------------------------------------\n"
+        + "_Salin kunci di atas dan tempelkan pada layar aktivasi aplikasi Repot.in PC Anda._";
+
+      window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(text), "_blank");
+    }
+
+    // --- Tab 2: Monitoring Perangkat Handlers ---
+    async function loadDevices(isManual) {
+      if (isManual === undefined) isManual = false;
+      const container = document.getElementById("deviceListContainer");
+      const refreshBtn = document.getElementById("refreshBtn");
+
+      const hasExistingData = state.devices && state.devices.length > 0;
+
+      // Jika belum ada data sama sekali, tampilkan loading spinner
+      if (!hasExistingData && container) {
+        container.innerHTML = '<div class="text-center py-10 text-slate-500 text-xs flex flex-col items-center gap-2">'
+          + '<div class="w-8 h-8 rounded-full border-2 border-indigo-500/20 border-t-indigo-500 animate-spin"></div>'
+          + '<span>Menghubungkan ke database Supabase...</span>'
+          + '</div>';
+      }
+
+      if (isManual && refreshBtn) {
+        refreshBtn.classList.add("animate-spin");
+      }
+
+      let devices = null;
+      let lastError = null;
+
+      // STRATEGI 1: Direct fetch via query parameter (Paling cepat, tanpa CORS preflight OPTIONS)
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 5000);
+        const queryUrl = CONFIG.supabaseUrl + "/rest/v1/device_registrations?select=*&order=created_at.desc&apikey=" + encodeURIComponent(CONFIG.supabaseKey);
+        const res = await fetch(queryUrl, { signal: controller.signal });
+        clearTimeout(timer);
+        if (res.ok) {
+          devices = await res.json();
+        } else {
+          lastError = new Error("Supabase query HTTP " + res.status + ": " + res.statusText);
+        }
+      } catch (err) {
+        lastError = err;
+        console.warn("Strategi 1 (query param) gagal:", err);
+      }
+
+      // STRATEGI 2: Direct fetch dengan headers standar (jika strategi 1 gagal)
+      if (!devices || devices.length === 0) {
+        try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5000);
+          const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?select=*&order=created_at.desc", {
+            headers: {
+              "apikey": CONFIG.supabaseKey,
+              "Authorization": "Bearer " + CONFIG.supabaseKey
+            },
+            signal: controller.signal
+          });
+          clearTimeout(timer);
+          if (res.ok) {
+            devices = await res.json();
+          } else {
+            lastError = new Error("Supabase header HTTP " + res.status);
+          }
+        } catch (err) {
+          lastError = err;
+          console.warn("Strategi 2 (headers) gagal:", err);
+        }
+      }
+
+      if (refreshBtn) refreshBtn.classList.remove("animate-spin");
+
+      if (devices && Array.isArray(devices) && devices.length > 0) {
+        state.devices = devices;
+        updateDeviceStats();
+        renderDeviceList();
+        if (isManual) showToast("Data lisensi diperbarui!");
+      } else if (hasExistingData) {
+        // Jika sebelumnya sudah ada data dari pre-injection server tapi background refresh gagal
+        updateDeviceStats();
+        renderDeviceList();
+        if (isManual) showToast("Menggunakan data lokal", true);
+      } else {
+        // Tampilkan kartu error informatif (BUKAN hanging spinner)
+        const errMsg = lastError ? (lastError.message || lastError.toString()) : "Koneksi cloud timeout";
+        if (container) {
+          container.innerHTML = '<div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs text-center space-y-2.5">'
+            + '<i data-lucide="alert-triangle" class="w-6 h-6 mx-auto text-rose-400"></i>'
+            + '<div class="font-bold">Gagal Mengambil Data Lisensi</div>'
+            + '<p class="text-[10px] text-slate-300">Tidak dapat terhubung ke server Supabase atau Google Cloud.</p>'
+            + '<div class="text-[10px] text-slate-400 font-mono bg-slate-950/80 p-2 rounded-xl border border-slate-800 break-all text-left">'
+            + escapeHtml(errMsg)
+            + '</div>'
+            + '<div class="flex gap-2 justify-center pt-1">'
+            + '<button onclick="loadDevices(true)" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-bold text-white shadow-md active:scale-95 transition-all">Coba Lagi</button>'
+            + '</div>'
+            + '</div>';
+          safeCreateIcons();
+        }
+      }
+    }
+
+    function updateDeviceStats() {
+      const today = new Date().toISOString().slice(0, 10);
+      let total = state.devices.length;
+      let active = 0;
+      let expired = 0;
+      let suspended = 0;
+
+      state.devices.forEach(d => {
+        if (d.status === "suspended") {
+          suspended++;
+        } else if (d.valid_until && d.valid_until < today) {
+          expired++;
+        } else {
+          active++;
+        }
+      });
+
+      document.getElementById("statTotal").textContent = total;
+      document.getElementById("statActive").textContent = active;
+      document.getElementById("statExpired").textContent = expired;
+      document.getElementById("statSuspended").textContent = suspended;
+
+      // Update badge di tab atas dan banner quick jump
+      const topBadge = document.getElementById("topBadgeDeviceCount");
+      if (topBadge) topBadge.textContent = total;
+      const quickBadge = document.getElementById("quickCountBadge");
+      if (quickBadge) quickBadge.textContent = total;
+
+      const badge = document.getElementById("badgeActiveCount");
+      if (total > 0) {
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
+
+    function setDeviceFilter(filter) {
+      state.deviceFilter = filter;
+      document.querySelectorAll(".dev-filter-chip").forEach(chip => {
+        if (chip.dataset.filter === filter) {
+          chip.className = "dev-filter-chip px-3 py-1 rounded-lg font-semibold bg-indigo-600 text-white";
+        } else {
+          chip.className = "dev-filter-chip px-3 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 border border-slate-800";
+        }
+      });
+      renderDeviceList();
+    }
+
+    function filterDevices() {
+      state.deviceSearch = document.getElementById("deviceSearchInput").value.trim().toLowerCase();
+      renderDeviceList();
+    }
+
+    function renderDeviceList() {
+      const container = document.getElementById("deviceListContainer");
+      const today = new Date().toISOString().slice(0, 10);
+
+      let filtered = state.devices.filter(d => {
+        // Status filter
+        const isSuspended = d.status === "suspended";
+        const isExpired = d.valid_until && d.valid_until < today;
+        const isActive = !isSuspended && !isExpired;
+
+        if (state.deviceFilter === "active" && !isActive) return false;
+        if (state.deviceFilter === "expired" && !isExpired) return false;
+        if (state.deviceFilter === "suspended" && !isSuspended) return false;
+
+        // Search query
+        if (state.deviceSearch) {
+          const q = state.deviceSearch;
+          const matchHwid = (d.machine_id || "").toLowerCase().includes(q);
+          const matchCode = (d.registration_code || "").toLowerCase().includes(q);
+          const matchNotes = (d.notes || "").toLowerCase().includes(q);
+          const matchIp = (d.device_ip || "").toLowerCase().includes(q);
+          if (!matchHwid && !matchCode && !matchNotes && !matchIp) return false;
+        }
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="text-center py-12 text-slate-500 text-xs space-y-1">'
+          + '<i data-lucide="inbox" class="w-8 h-8 mx-auto text-slate-600"></i>'
+          + '<p>Tidak ada perangkat yang cocok dengan kriteria filter.</p>'
+          + '</div>';
+        safeCreateIcons();
+        return;
+      }
+
+      state.lastFiltered = filtered;
+
+      container.innerHTML = filtered.map((d, idx) => {
+        const isSuspended = d.status === "suspended";
+        const isExpired = d.valid_until && d.valid_until < today;
+
+        let statusBadge = "";
+        if (isSuspended) {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">DIBLOKIR</span>';
+        } else if (isExpired) {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30">EXPIRED</span>';
+        } else {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">AKTIF</span>';
+        }
+
+        const countdown = formatRelativeDays(d.valid_until);
+        const notesDisplay = d.notes ? escapeHtml(d.notes) : '<span class="text-slate-500 italic">Belum ada nama toko / catatan</span>';
+        const expiryText = d.valid_until ? (d.valid_until + ' (' + countdown + ')') : 'Lifetime (Permanen)';
+        const expiryClass = isExpired ? 'text-rose-400' : 'text-emerald-400';
+        const suspendBtnClass = isSuspended
+          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+          : 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+        const suspendIcon = isSuspended ? 'check-circle' : 'slash';
+        const suspendLabel = isSuspended ? 'Buka Blokir' : 'Kunci (Lock)';
+
+        return '<div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 shadow-lg space-y-2.5">'
+          + '<div class="flex items-start justify-between gap-2">'
+            + '<div class="min-w-0">'
+              + '<div class="flex items-center gap-1.5 flex-wrap">'
+                + '<span class="font-mono text-xs font-bold text-white tracking-wide bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800">'
+                  + escapeHtml(d.machine_id)
+                + '</span>'
+                + statusBadge
+              + '</div>'
+              + '<div class="text-xs font-semibold text-indigo-300 mt-1 flex items-center gap-1">'
+                + '<span>' + notesDisplay + '</span>'
+                + '<button type="button" onclick="handleEditNotes(' + idx + ')" class="text-slate-400 hover:text-white p-1">'
+                  + '<i data-lucide="edit-2" class="w-3 h-3"></i>'
+                + '</button>'
+              + '</div>'
+            + '</div>'
+            + '<button type="button" onclick="handleShareWA(' + idx + ')" class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 active:scale-90 transition-all shrink-0" title="Kirim ke WhatsApp">'
+              + '<i data-lucide="message-circle" class="w-4 h-4"></i>'
+            + '</button>'
+          + '</div>'
+          + '<div class="p-2 rounded-xl bg-slate-950 border border-slate-800/80 space-y-1 text-[11px]">'
+            + '<div class="flex items-center justify-between">'
+              + '<span class="text-slate-400">Kode Lisensi:</span>'
+              + '<span class="font-mono font-bold text-slate-200 select-all">' + escapeHtml(d.registration_code || '-') + '</span>'
+            + '</div>'
+            + '<div class="flex items-center justify-between">'
+              + '<span class="text-slate-400">Masa Berlaku:</span>'
+              + '<span class="font-mono font-semibold ' + expiryClass + '">' + expiryText + '</span>'
+            + '</div>'
+            + '<div class="flex items-center justify-between text-[10px] text-slate-500 pt-0.5">'
+              + '<span>IP: ' + escapeHtml(d.device_ip || 'Offline') + '</span>'
+              + '<span>Daftar: ' + (d.created_at || '').slice(0, 10) + '</span>'
+            + '</div>'
+          + '</div>'
+          + '<div class="grid grid-cols-3 gap-1.5 pt-1 text-[11px]">'
+            + '<button type="button" onclick="handleOpenExtend(' + idx + ')" class="py-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold flex items-center justify-center gap-1 active:scale-95 transition-all">'
+              + '<i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-emerald-400"></i>'
+              + '<span>Perpanjang</span>'
+            + '</button>'
+            + '<button type="button" onclick="handleToggleSuspend(' + idx + ')" class="py-1.5 px-2 rounded-xl ' + suspendBtnClass + ' font-semibold flex items-center justify-center gap-1 active:scale-95 transition-all">'
+              + '<i data-lucide="' + suspendIcon + '" class="w-3.5 h-3.5"></i>'
+              + '<span>' + suspendLabel + '</span>'
+            + '</button>'
+            + '<button type="button" onclick="handleDeleteDevice(' + idx + ')" class="py-1.5 px-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 font-semibold flex items-center justify-center gap-1 active:scale-95 transition-all">'
+              + '<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>'
+              + '<span>Hapus</span>'
+            + '</button>'
+          + '</div>'
+        + '</div>';
+      }).join("");
+
+      safeCreateIcons();
+    }
+
+    // --- Action Dispatchers (Aman dari kutip & newline) ---
+    function getFilteredDevice(idx) {
+      if (state.lastFiltered && state.lastFiltered[idx]) {
+        return state.lastFiltered[idx];
+      }
+      return state.devices[idx];
+    }
+
+    function handleEditNotes(idx) {
+      const d = getFilteredDevice(idx);
+      if (!d) return;
+      openEditNotes(d.machine_id, d.notes || "");
+    }
+
+    function handleShareWA(idx) {
+      const d = getFilteredDevice(idx);
+      if (!d) return;
+      shareDeviceWA(d.machine_id, d.registration_code || "", d.valid_until || "", d.notes || "");
+    }
+
+    function handleOpenExtend(idx) {
+      const d = getFilteredDevice(idx);
+      if (!d) return;
+      openExtendModal(d.machine_id);
+    }
+
+    function handleToggleSuspend(idx) {
+      const d = getFilteredDevice(idx);
+      if (!d) return;
+      toggleSuspendDevice(d.machine_id, d.status || "active");
+    }
+
+    function handleDeleteDevice(idx) {
+      const d = getFilteredDevice(idx);
+      if (!d) return;
+      deleteDevice(d.machine_id);
+    }
+
+    // --- Actions on Devices ---
+    function openEditNotes(hwid, currentNotes) {
+      state.editingHwid = hwid;
+      document.getElementById("modalNotesHwid").textContent = hwid;
+      document.getElementById("modalNotesInput").value = currentNotes;
+      document.getElementById("modalEditNotes").classList.remove("hidden");
+    }
+
+    async function submitSaveNotes() {
+      const notes = document.getElementById("modalNotesInput").value.trim();
+      const btn = document.getElementById("btnSaveNotes");
+      btn.disabled = true;
+      btn.textContent = "Menyimpan...";
+
+      try {
+        let savedOk = false;
+        try {
+          const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?machine_id=eq." + encodeURIComponent(state.editingHwid), {
+            method: "PATCH",
+            headers: {
+              "apikey": CONFIG.supabaseKey,
+              "Authorization": "Bearer " + CONFIG.supabaseKey,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ notes: notes || null, updated_at: new Date().toISOString() })
+          });
+          if (res.ok) savedOk = true;
+        } catch (e) {
+          console.warn("Direct patch notes error:", e);
+        }
+
+        if (!savedOk) {
+          throw new Error("Gagal menghubungi Supabase");
+        }
+
+        // Update local state
+        const dev = state.devices.find(d => d.machine_id === state.editingHwid);
+        if (dev) dev.notes = notes;
+        renderDeviceList();
+        closeModal("modalEditNotes");
+        showToast("Catatan toko berhasil diperbarui!");
+      } catch (e) {
+        showToast("Gagal menyimpan catatan: " + (e.message || e.toString()), true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Simpan";
+      }
+    }
+
+    function openExtendModal(hwid) {
+      state.extendingHwid = hwid;
+      document.getElementById("modalExtendHwid").textContent = hwid;
+      setExtendDuration("1m");
+      document.getElementById("modalExtendExpiry").classList.remove("hidden");
+    }
+
+    function setExtendDuration(ext) {
+      state.extendDuration = ext;
+      document.querySelectorAll(".ext-btn").forEach(b => {
+        if (b.dataset.ext === ext) {
+          b.className = "ext-btn px-2 py-1.5 rounded-lg text-xs font-semibold border bg-indigo-600 border-indigo-500 text-white";
+        } else {
+          b.className = "ext-btn px-2 py-1.5 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-300";
+        }
+      });
+
+      const wrap = document.getElementById("modalExtendCustomWrap");
+      if (ext === "custom") {
+        wrap.classList.remove("hidden");
+        if (!document.getElementById("modalExtendCustomDate").value) {
+          const d = new Date();
+          d.setMonth(d.getMonth() + 1);
+          document.getElementById("modalExtendCustomDate").value = d.toISOString().slice(0, 10);
+        }
+      } else {
+        wrap.classList.add("hidden");
+      }
+      updateExtendPreview();
+    }
+
+    function updateExtendPreview() {
+      let targetDate = null;
+      if (state.extendDuration === "lifetime") targetDate = null;
+      else if (state.extendDuration === "custom") targetDate = document.getElementById("modalExtendCustomDate").value;
+      else {
+        const d = new Date();
+        if (state.extendDuration === "1m") d.setDate(d.getDate() + 30);
+        else if (state.extendDuration === "3m") d.setDate(d.getDate() + 90);
+        else if (state.extendDuration === "6m") d.setDate(d.getDate() + 180);
+        else if (state.extendDuration === "1y") d.setFullYear(d.getFullYear() + 1);
+        targetDate = d.toISOString().slice(0, 10);
+      }
+
+      const p = document.getElementById("modalExtendPreview");
+      if (targetDate) {
+        p.textContent = targetDate + " (" + formatRelativeDays(targetDate) + ")";
+        p.className = "font-mono font-bold text-emerald-400";
+      } else {
+        p.textContent = "Permanen (Lifetime)";
+        p.className = "font-mono font-bold text-indigo-400";
+      }
+    }
+
+    async function submitExtendExpiry() {
+      let targetDate = null;
+      if (state.extendDuration === "lifetime") targetDate = null;
+      else if (state.extendDuration === "custom") targetDate = document.getElementById("modalExtendCustomDate").value;
+      else {
+        const d = new Date();
+        if (state.extendDuration === "1m") d.setDate(d.getDate() + 30);
+        else if (state.extendDuration === "3m") d.setDate(d.getDate() + 90);
+        else if (state.extendDuration === "6m") d.setDate(d.getDate() + 180);
+        else if (state.extendDuration === "1y") d.setFullYear(d.getFullYear() + 1);
+        targetDate = d.toISOString().slice(0, 10);
+      }
+
+      const btn = document.getElementById("btnSaveExtend");
+      btn.disabled = true;
+      btn.textContent = "Menerapkan...";
+
+      try {
+        const newCode = generateLicenseKeyLocal(state.extendingHwid, targetDate);
+        let updatedOk = false;
+
+        try {
+          const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?machine_id=eq." + encodeURIComponent(state.extendingHwid), {
+            method: "PATCH",
+            headers: {
+              "apikey": CONFIG.supabaseKey,
+              "Authorization": "Bearer " + CONFIG.supabaseKey,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              valid_until: targetDate,
+              registration_code: newCode,
+              status: "active",
+              updated_at: new Date().toISOString()
+            })
+          });
+          if (res.ok) updatedOk = true;
+        } catch (e) {
+          console.warn("Direct extend error:", e);
+        }
+
+        if (!updatedOk) {
+          throw new Error("Gagal memperbarui masa berlaku di cloud");
+        }
+
+        const dev = state.devices.find(d => d.machine_id === state.extendingHwid);
+        if (dev) {
+          dev.valid_until = targetDate;
+          dev.registration_code = newCode;
+          dev.status = "active";
+        }
+        updateDeviceStats();
+        renderDeviceList();
+        closeModal("modalExtendExpiry");
+        showToast("Masa berlaku berhasil diperpanjang!");
+      } catch (e) {
+        showToast("Gagal memperpanjang: " + (e.message || e.toString()), true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Terapkan";
+      }
+    }
+
+    async function toggleSuspendDevice(hwid, currentStatus) {
+      const newStatus = currentStatus === "suspended" ? "active" : "suspended";
+      const actionName = newStatus === "suspended" ? "mengunci (suspend)" : "mengaktifkan kembali";
+
+      if (!confirm("Yakin ingin " + actionName + " perangkat " + hwid + "?")) return;
+
+      try {
+        let toggledOk = false;
+        try {
+          const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?machine_id=eq." + encodeURIComponent(hwid), {
+            method: "PATCH",
+            headers: {
+              "apikey": CONFIG.supabaseKey,
+              "Authorization": "Bearer " + CONFIG.supabaseKey,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ status: newStatus, updated_at: new Date().toISOString() })
+          });
+          if (res.ok) toggledOk = true;
+        } catch (e) {
+          console.warn("Direct toggle status error:", e);
+        }
+
+        if (!toggledOk) {
+          throw new Error("Gagal mengubah status di cloud");
+        }
+
+        const dev = state.devices.find(d => d.machine_id === hwid);
+        if (dev) dev.status = newStatus;
+        updateDeviceStats();
+        renderDeviceList();
+        showToast("Perangkat berhasil di-" + newStatus + "!");
+      } catch (e) {
+        showToast("Gagal mengubah status: " + (e.message || e.toString()), true);
+      }
+    }
+
+    async function deleteDevice(hwid) {
+      if (!confirm("PERINGATAN: Hapus perangkat " + hwid + " dari database Supabase secara permanen?")) return;
+
+      try {
+        let deletedOk = false;
+        try {
+          const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?machine_id=eq." + encodeURIComponent(hwid), {
+            method: "DELETE",
+            headers: {
+              "apikey": CONFIG.supabaseKey,
+              "Authorization": "Bearer " + CONFIG.supabaseKey
+            }
+          });
+          if (res.ok) deletedOk = true;
+        } catch (e) {
+          console.warn("Direct delete error:", e);
+        }
+
+        if (!deletedOk) {
+          throw new Error("Gagal menghapus perangkat dari cloud");
+        }
+
+        state.devices = state.devices.filter(d => d.machine_id !== hwid);
+        updateDeviceStats();
+        renderDeviceList();
+        showToast("Perangkat berhasil dihapus dari cloud!");
+      } catch (e) {
+        showToast("Gagal menghapus perangkat: " + (e.message || e.toString()), true);
+      }
+    }
+
+    function shareDeviceWA(hwid, code, validUntil, notes) {
+      const expText = validUntil ? (validUntil + " (" + formatRelativeDays(validUntil) + ")") : "Permanen (Lifetime)";
+      const tick = String.fromCharCode(96);
+      const text =
+        "*INFORMASI LISENSI PERANGKAT REPOT.IN*\n" +
+        "----------------------------------------\n" +
+        "*Machine ID:* " + hwid + "\n" +
+        "*Toko / User:* " + (notes || "-") + "\n" +
+        "*Kunci Lisensi:* " + tick + code + tick + "\n" +
+        "*Masa Berlaku:* " + expText + "\n" +
+        "----------------------------------------\n" +
+        "_Gunakan kunci di atas untuk aktivasi ulang jika diperlukan._";
+
+      window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(text), "_blank");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add("hidden");
+    }
+
+    // --- Tab 3: History Handlers ---
+    function saveToHistory(item) {
+      state.history.unshift(item);
+      if (state.history.length > 50) state.history.pop();
+      SafeStorage.set("repotin_key_history", JSON.stringify(state.history));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const container = document.getElementById("historyListContainer");
+      if (state.history.length === 0) {
+        container.innerHTML = '<div class="text-center py-10 text-slate-500 text-xs">Belum ada riwayat lisensi.</div>';
+        return;
+      }
+
+      container.innerHTML = state.history.map(function(item, idx) {
+        return '<div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1.5 text-xs">'
+          + '<div class="flex items-center justify-between">'
+            + '<span class="font-mono font-bold text-white bg-slate-950 px-2 py-0.5 rounded">' + escapeHtml(item.hwid) + '</span>'
+            + '<span class="text-[10px] text-slate-500">' + (item.createdAt || '').slice(0, 16).replace('T', ' ') + '</span>'
+          + '</div>'
+          + '<div class="font-mono font-bold text-indigo-400 select-all">' + escapeHtml(item.code) + '</div>'
+          + '<div class="flex items-center justify-between text-[11px] text-slate-400">'
+            + '<span>' + escapeHtml(item.notes || 'Tanpa catatan') + '</span>'
+            + '<span class="text-emerald-400">' + (item.validUntil || 'Lifetime') + '</span>'
+          + '</div>'
+          + '<div class="pt-1 flex justify-end">'
+            + '<button type="button" onclick="copyHistoryKey(' + idx + ')" class="text-[10px] text-slate-300 hover:text-white px-2 py-1 rounded bg-slate-800">Salin Kunci</button>'
+          + '</div>'
+        + '</div>';
+      }).join("");
+      safeCreateIcons();
+    }
+
+    function copyHistoryKey(idx) {
+      const item = state.history[idx];
+      if (!item || !item.code) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(item.code);
+      }
+      showToast("Kunci disalin!");
+    }
+
+    function clearLocalHistory() {
+      if (!confirm("Hapus semua riwayat lokal di HP ini?")) return;
+      state.history = [];
+      SafeStorage.remove("repotin_key_history");
+      renderHistory();
+      showToast("Riwayat lokal dibersihkan.");
+    }
+
+    // --- Tab 4: Security PIN Settings ---
+    function togglePinSetting() {
+      const isEnabled = document.getElementById("pinEnableToggle").checked;
+      state.isPinEnabled = isEnabled;
+      SafeStorage.set("repotin_pin_enabled", isEnabled ? "true" : "false");
+
+      const wrap = document.getElementById("pinChangeWrap");
+      if (isEnabled) {
+        wrap.classList.remove("hidden");
+        if (!state.savedPin) {
+          document.getElementById("newPinInput").focus();
+        }
+      } else {
+        wrap.classList.add("hidden");
+      }
+      showToast(isEnabled ? "Proteksi PIN diaktifkan!" : "Proteksi PIN dimatikan.");
+    }
+
+    function saveNewPin() {
+      const pin = document.getElementById("newPinInput").value.trim();
+      if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+        showToast("PIN harus berupa 4 angka!", true);
+        return;
+      }
+      state.savedPin = pin;
+      SafeStorage.set("repotin_companion_pin", pin);
+      document.getElementById("newPinInput").value = "";
+      showToast("PIN 4 Digit berhasil disimpan!");
+    }
+
+    function checkPinOnStartup() {
+      if (state.isPinEnabled && state.savedPin) {
+        document.getElementById("pinScreen").classList.remove("hidden");
+      }
+    }
+
+    function pressPin(digit) {
+      if (state.pinEntered.length < 4) {
+        state.pinEntered += digit;
+        updatePinDots();
+        if (state.pinEntered.length === 4) {
+          setTimeout(verifyPin, 150);
+        }
+      }
+    }
+
+    function verifyPin() {
+      if (state.pinEntered === state.savedPin) {
+        document.getElementById("pinScreen").classList.add("hidden");
+        state.pinEntered = "";
+        showToast("Akses Terverifikasi!");
+      } else {
+        showToast("PIN Salah! Coba lagi.", true);
+        clearPin();
+      }
+    }
+
+    function delPin() {
+      state.pinEntered = state.pinEntered.slice(0, -1);
+      updatePinDots();
+    }
+
+    function clearPin() {
+      state.pinEntered = "";
+      updatePinDots();
+    }
+
+    function updatePinDots() {
+      const dots = document.getElementById("pinDots").children;
+      for (let i = 0; i < 4; i++) {
+        if (i < state.pinEntered.length) {
+          dots[i].className = "w-3.5 h-3.5 rounded-full border-2 border-indigo-400 bg-indigo-500 transition-all";
+        } else {
+          dots[i].className = "w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900 transition-all";
+        }
+      }
+    }
+
+    // --- Navigation Tabs ---
+    function switchTab(tab) {
+      state.activeTab = tab;
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+
+      // Update bottom nav
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.classList.remove("text-indigo-400");
+        btn.classList.add("text-slate-400");
+      });
+      const activeNav = document.getElementById("nav-" + tab);
+      if (activeNav) {
+        activeNav.classList.add("text-indigo-400");
+        activeNav.classList.remove("text-slate-400");
+      }
+
+      // Update top segmented tab bar
+      document.querySelectorAll(".top-tab-btn").forEach(btn => {
+        btn.classList.remove("bg-indigo-600", "text-white", "shadow-md");
+        btn.classList.add("text-slate-400");
+      });
+      const activeTopNav = document.getElementById("top-nav-" + tab);
+      if (activeTopNav) {
+        activeTopNav.classList.remove("text-slate-400");
+        activeTopNav.classList.add("bg-indigo-600", "text-white", "shadow-md");
+      }
+
+      const targetEl = document.getElementById("tab-" + tab);
+      if (targetEl) targetEl.classList.remove("hidden");
+
+      if (tab === "devices") {
+        loadDevices();
+      }
+      safeCreateIcons();
+    }
+
+    // --- Toast & Utility Helpers ---
+    function showToast(msg, isError) {
+      if (isError === undefined) isError = false;
+      const t = document.getElementById("toast");
+      const m = document.getElementById("toastMsg");
+      const icon = document.getElementById("toastIcon");
+
+      m.textContent = msg;
+      if (isError) {
+        icon.setAttribute("data-lucide", "alert-circle");
+        icon.className = "w-4 h-4 text-rose-400";
+      } else {
+        icon.setAttribute("data-lucide", "check-circle");
+        icon.className = "w-4 h-4 text-emerald-400";
+      }
+      safeCreateIcons();
+
+      t.classList.remove("opacity-0", "translate-y-2");
+      t.classList.add("opacity-100", "translate-y-0");
+      setTimeout(() => {
+        t.classList.add("opacity-0", "translate-y-2");
+        t.classList.remove("opacity-100", "translate-y-0");
+      }, 2500);
+    }
+
+    function formatRelativeDays(dateStr) {
+      if (!dateStr) return "Lifetime";
+      const target = new Date(dateStr + "T00:00:00");
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      const diffMs = target - now;
+      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+      if (diffDays > 0) return "Sisa " + diffDays + " hari";
+      if (diffDays === 0) return "Hari ini";
+      return "Expired " + Math.abs(diffDays) + " hari lalu";
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.classList.contains("dark");
+      if (isDark) {
+        html.classList.remove("dark");
+        document.getElementById("themeBtn").innerHTML = '<i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>';
+      } else {
+        html.classList.add("dark");
+        document.getElementById("themeBtn").innerHTML = '<i data-lucide="moon" class="w-4 h-4"></i>';
+      }
+      safeCreateIcons();
+    }
+
+    function escapeHtml(str) {
+      return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function escapeAttr(str) {
+      return (str || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    }
+
+    // --- Expose All Handlers to Window (Wajib untuk Google Apps Script Sandboxed Iframe) ---
+    const globalHandlers = {
+      calculateTargetExpiry,
+      checkPinOnStartup,
+      clearLocalHistory,
+      clearPin,
+      closeModal,
+      copyHistoryKey,
+      copyKeyResult,
+      delPin,
+      deleteDevice,
+      escapeAttr,
+      escapeHtml,
+      filterDevices,
+      formatRelativeDays,
+      generateLicenseKeyLocal,
+      getFilteredDevice,
+      handleDeleteDevice,
+      handleEditNotes,
+      handleGenerate,
+      handleOpenExtend,
+      handleShareWA,
+      handleToggleSuspend,
+      loadDevices,
+      openEditNotes,
+      openExtendModal,
+      pasteHwid,
+      pressPin,
+      renderDeviceList,
+      renderHistory,
+      safeCreateIcons,
+      saveNewPin,
+      saveToHistory,
+      selectDuration,
+      setDeviceFilter,
+      setExtendDuration,
+      shareDeviceWA,
+      shareToWhatsApp,
+      showToast,
+      submitExtendExpiry,
+      submitSaveNotes,
+      switchTab,
+      togglePinSetting,
+      toggleSuspendDevice,
+      toggleTheme,
+      updateDeviceStats,
+      updateExpiryPreview,
+      updateExtendPreview,
+      updatePinDots,
+      verifyPin
+    };
+    for (let fnName in globalHandlers) {
+      window[fnName] = globalHandlers[fnName];
+    }
+
+    // --- App Init (Aman jika DOMContentLoaded sudah lewat di sandboxed iframe) ---
+    function initApp() {
+      safeCreateIcons();
+      updateExpiryPreview();
+      renderHistory();
+
+      const pinToggle = document.getElementById("pinEnableToggle");
+      if (pinToggle) pinToggle.checked = state.isPinEnabled;
+      if (state.isPinEnabled) {
+        const pinWrap = document.getElementById("pinChangeWrap");
+        if (pinWrap) pinWrap.classList.remove("hidden");
+      }
+      checkPinOnStartup();
+
+      // Render awal jika ada data
+      if (state.devices && state.devices.length > 0) {
+        updateDeviceStats();
+        renderDeviceList();
+      }
+
+      // Sinkronisasi data cloud terbaru
+      loadDevices();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+
+</html>
