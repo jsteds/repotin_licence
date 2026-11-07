@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>Repotin License Manager</title>
 
   <!-- Anti-Cache & Mobile Network Resilience Headers -->
@@ -13,19 +13,19 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- Web App / PWA Meta -->
-  <meta name="theme-color" content="#09090b">
+  <meta name="theme-color" content="#09090b" id="metaThemeColor">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Repotin Licence">
 
-  <!-- Typography: Inter & Plus Jakarta Sans with System Fallbacks -->
+  <!-- Typography: Inter & JetBrains Mono with System Fallbacks -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
     rel="stylesheet">
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS CDN with class-based Dark Mode -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -35,27 +35,6 @@
           fontFamily: {
             sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
-          },
-          colors: {
-            background: '#09090b',
-            foreground: '#fafafa',
-            card: '#18181b',
-            'card-foreground': '#fafafa',
-            popover: '#18181b',
-            'popover-foreground': '#fafafa',
-            primary: '#fafafa',
-            'primary-foreground': '#18181b',
-            secondary: '#27272a',
-            'secondary-foreground': '#fafafa',
-            muted: '#27272a',
-            'muted-foreground': '#a1a1aa',
-            accent: '#27272a',
-            'accent-foreground': '#fafafa',
-            destructive: '#ef4444',
-            'destructive-foreground': '#fafafa',
-            border: '#27272a',
-            input: '#27272a',
-            ring: '#d4d4d8'
           }
         }
       }
@@ -66,22 +45,22 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* CSS Variables & shadcn Base Reset */
-    :root {
-      --background: #09090b;
-      --foreground: #fafafa;
-      --card: #121215;
-      --card-border: #27272a;
-      --muted: #a1a1aa;
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
     }
 
     body {
       padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 64px);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      background-color: #09090b;
-      color: #fafafa;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
@@ -97,20 +76,20 @@
     }
 
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #27272a;
+      background: rgba(161, 161, 170, 0.25);
       border-radius: 9999px;
     }
 
     /* Touch Feedback */
     button:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
   </style>
 </head>
 
-<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col font-sans antialiased selection:bg-zinc-800 selection:text-zinc-100">
+<body class="bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 min-h-screen flex flex-col font-sans antialiased selection:bg-zinc-200 dark:selection:bg-zinc-800 transition-colors duration-150">
 
-  <!-- DIAGNOSTIC ERROR BANNER (Muncul otomatis jika ada error JS di browser HP) -->
+  <!-- DIAGNOSTIC ERROR BANNER -->
   <div id="diagBanner"
     class="fixed top-0 left-0 right-0 z-[9999] bg-rose-600 text-white p-3 text-xs font-mono shadow-2xl hidden flex-col gap-1">
     <div class="font-semibold flex items-center justify-between">
@@ -146,145 +125,146 @@
   <!-- LOGIN AUTHENTICATION SCREEN (shadcn Dialog / Card Style)           -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <div id="loginScreen"
-    class="fixed inset-0 z-50 bg-zinc-950/95 backdrop-blur-md flex flex-col items-center justify-center p-4 transition-all duration-300">
-    <div class="w-full max-w-sm rounded-xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-2xl backdrop-blur-xl space-y-6">
+    class="fixed inset-0 z-50 bg-zinc-100/95 dark:bg-zinc-950/95 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-4 overflow-y-auto transition-all duration-300">
+    <div class="w-full max-w-sm rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 p-5 sm:p-6 shadow-2xl backdrop-blur-xl space-y-5 my-auto">
       
       <!-- Brand & Header -->
-      <div class="text-center space-y-2">
-        <div class="inline-flex size-11 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800/80 text-zinc-100 font-mono font-bold text-lg shadow-xs mb-1">
+      <div class="text-center space-y-1.5">
+        <div class="inline-flex size-10 sm:size-11 items-center justify-center rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-zinc-100 font-mono font-bold text-lg shadow-xs mb-1">
           R
         </div>
-        <h1 class="text-base font-semibold tracking-tight text-zinc-100">Repotin License Manager</h1>
-        <p class="text-xs text-zinc-400">Masuk dengan kredensial administrator untuk mengelola lisensi</p>
+        <h1 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">Repotin License Manager</h1>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">Masuk dengan kredensial administrator</p>
       </div>
 
       <!-- Login Form Card -->
-      <form id="loginForm" onsubmit="return handleLoginSubmit(event)" class="space-y-4">
+      <form id="loginForm" onsubmit="return handleLoginSubmit(event)" class="space-y-3.5">
         <!-- Error Alert -->
         <div id="loginErrorMsg"
-          class="hidden p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-medium flex items-center gap-2">
-          <i data-lucide="alert-circle" class="size-4 shrink-0 text-rose-400"></i>
+          class="hidden p-2.5 rounded-lg bg-red-50 dark:bg-rose-500/10 border border-red-200 dark:border-rose-500/20 text-red-600 dark:text-rose-300 text-xs font-medium flex items-center gap-2">
+          <i data-lucide="alert-circle" class="size-4 shrink-0 text-red-500 dark:text-rose-400"></i>
           <span id="loginErrorText">Password tidak sesuai!</span>
         </div>
 
         <!-- Username Field -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-medium text-zinc-300">Username</label>
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-zinc-700 dark:text-zinc-300">Username</label>
           <input type="text" id="loginUsername" required autocomplete="username"
             placeholder="admin" value="admin"
-            class="flex h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-1 text-xs text-zinc-100 shadow-xs transition-colors placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
+            class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-1 text-xs text-zinc-900 dark:text-zinc-100 shadow-xs placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
         </div>
 
         <!-- Password Field -->
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between">
-            <label class="text-xs font-medium text-zinc-300">Password Admin</label>
-          </div>
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-zinc-700 dark:text-zinc-300">Password Admin</label>
           <div class="relative">
             <input type="password" id="loginPassword" required autocomplete="current-password"
               placeholder="Masukkan password..."
-              class="flex h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 pr-9 py-1 text-xs font-mono text-zinc-100 shadow-xs transition-colors placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
+              class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 pr-9 py-1 text-xs font-mono text-zinc-900 dark:text-zinc-100 shadow-xs placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
             <button type="button" onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')"
-              class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 transition-colors p-1">
+              class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors p-1">
               <i id="loginEyeIcon" data-lucide="eye" class="size-3.5"></i>
             </button>
           </div>
         </div>
 
         <!-- Remember Me Checkbox -->
-        <div class="flex items-center space-x-2 pt-1">
+        <div class="flex items-center space-x-2 pt-0.5">
           <input type="checkbox" id="loginRememberMe" checked
-            class="size-4 rounded-md border border-zinc-700 bg-zinc-950 text-zinc-100 accent-zinc-100 focus:ring-1 focus:ring-zinc-400 cursor-pointer" />
-          <label for="loginRememberMe" class="text-xs text-zinc-400 cursor-pointer select-none">
+            class="size-4 rounded border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 accent-zinc-900 dark:accent-zinc-100 focus:ring-1 focus:ring-zinc-400 cursor-pointer" />
+          <label for="loginRememberMe" class="text-xs text-zinc-600 dark:text-zinc-400 cursor-pointer select-none">
             Ingat saya di perangkat ini
           </label>
         </div>
 
         <!-- Submit Button -->
         <button type="submit" id="loginBtn"
-          class="inline-flex h-9 w-full items-center justify-center rounded-lg bg-zinc-100 px-4 py-2 text-xs font-medium text-zinc-900 shadow-xs hover:bg-zinc-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 transition-colors cursor-pointer mt-2">
+          class="inline-flex h-9 w-full items-center justify-center rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-950 px-4 py-2 text-xs font-medium shadow-xs transition-colors cursor-pointer mt-1">
           <span>Masuk ke Dashboard</span>
         </button>
       </form>
 
       <!-- Footer Info -->
-      <div class="text-center text-[11px] text-zinc-500 flex items-center justify-center gap-1.5">
-        <i data-lucide="shield-check" class="size-3.5 text-zinc-400"></i>
-        <span>Supabase REST API Cloud • Enkripsi TLS 1.3</span>
+      <div class="text-center text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-500 flex items-center justify-center gap-1.5 pt-1">
+        <i data-lucide="shield-check" class="size-3.5 text-zinc-400 dark:text-zinc-500"></i>
+        <span>Supabase REST Cloud • TLS 1.3</span>
       </div>
     </div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- HEADER (shadcn App Header)                                         -->
+  <!-- HEADER (shadcn Responsive App Header)                               -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <header class="sticky top-0 z-40 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/80 px-4 py-2.5">
-    <div class="max-w-md mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="size-8 rounded-lg border border-zinc-700 bg-zinc-900 flex items-center justify-center text-zinc-100 font-mono font-bold text-xs shadow-xs">
+  <header class="sticky top-0 z-40 bg-white/85 dark:bg-zinc-950/85 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800/80 px-3 sm:px-4 py-2 sm:py-2.5 transition-colors">
+    <div class="max-w-md mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="size-7 sm:size-8 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-900 dark:text-zinc-100 font-mono font-bold text-xs shadow-xs shrink-0">
           R
         </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-xs font-semibold tracking-tight text-zinc-100 leading-none">Repotin Companion</h1>
-            <span class="inline-flex items-center rounded-md border border-zinc-800 bg-zinc-900 px-1.5 py-0.5 text-[9px] font-medium text-zinc-400">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <h1 class="text-xs font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 leading-none truncate">Repotin Companion</h1>
+            <span class="inline-flex items-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 px-1.5 py-0.2 text-[9px] font-medium text-zinc-600 dark:text-zinc-400 shrink-0">
               Pages
             </span>
           </div>
-          <div class="flex items-center gap-1.5 mt-1">
-            <span id="connIndicator" class="size-1.5 rounded-full bg-emerald-500"></span>
-            <span id="connText" class="text-[10px] text-zinc-400">Online 24/7 Cloud</span>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span id="connIndicator" class="size-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+            <span id="connText" class="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">Online Cloud</span>
           </div>
         </div>
       </div>
 
       <!-- Header Action Buttons -->
-      <div class="flex items-center gap-1">
+      <div class="flex items-center gap-1 shrink-0">
         <button onclick="loadDevices(true)" id="refreshBtn" title="Segarkan Data"
-          class="inline-flex size-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 transition-colors cursor-pointer">
-          <i data-lucide="refresh-cw" class="size-3.5"></i>
+          class="inline-flex size-7 sm:size-8 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer">
+          <i data-lucide="refresh-cw" class="size-3 sm:size-3.5"></i>
         </button>
-        <button onclick="toggleTheme()" id="themeBtn" title="Ganti Tema"
-          class="inline-flex size-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 transition-colors cursor-pointer">
-          <i data-lucide="moon" class="size-3.5"></i>
+        <button onclick="toggleTheme()" id="themeBtn" title="Ganti Tema (Dark / Light)"
+          class="inline-flex size-7 sm:size-8 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer">
+          <i data-lucide="moon" class="size-3 sm:size-3.5"></i>
         </button>
         <button onclick="handleLogout()" id="logoutBtn" title="Logout / Kunci Layar"
-          class="inline-flex size-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-red-400 hover:bg-zinc-900 transition-colors cursor-pointer">
-          <i data-lucide="log-out" class="size-3.5"></i>
+          class="inline-flex size-7 sm:size-8 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer">
+          <i data-lucide="log-out" class="size-3 sm:size-3.5"></i>
         </button>
       </div>
     </div>
   </header>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- TOP SEGMENTED NAVIGATION TABS (shadcn TabsList Component)           -->
+  <!-- TOP SEGMENTED NAVIGATION TABS (Mobile-Fit Layout)                  -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <nav class="sticky top-[49px] z-30 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800 px-3 py-2">
-    <div class="max-w-md mx-auto grid grid-cols-4 gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-lg">
+  <nav class="sticky top-[45px] sm:top-[49px] z-30 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-2 sm:px-3 py-1.5 sm:py-2 transition-colors">
+    <div class="max-w-md mx-auto grid grid-cols-4 gap-1 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
       <button type="button" onclick="switchTab('devices')" id="top-nav-devices"
-        class="top-tab-btn py-1.5 px-2 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 bg-zinc-800 text-zinc-100 shadow-xs cursor-pointer">
-        <i data-lucide="database" class="size-3.5 text-zinc-300"></i>
-        <span>Lisensi</span>
+        class="top-tab-btn py-1 sm:py-1.5 px-1 sm:px-2 rounded-md text-[11px] sm:text-xs font-medium transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs border border-zinc-200/60 dark:border-transparent cursor-pointer">
+        <div class="flex items-center gap-1">
+          <i data-lucide="database" class="size-3.5 text-zinc-700 dark:text-zinc-300"></i>
+          <span id="topBadgeDeviceCountMobile" class="sm:hidden text-[9px] font-bold px-1 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 leading-tight">0</span>
+        </div>
+        <span class="truncate">Lisensi</span>
         <span id="topBadgeDeviceCount"
-          class="inline-flex items-center justify-center size-4 rounded-full text-[9px] font-bold bg-zinc-700 text-zinc-100 leading-none">0</span>
+          class="hidden sm:inline-flex items-center justify-center size-4 rounded-full text-[9px] font-bold bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 leading-none">0</span>
       </button>
 
       <button type="button" onclick="switchTab('keygen')" id="top-nav-keygen"
-        class="top-tab-btn py-1.5 px-2 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 text-zinc-400 hover:text-zinc-200 cursor-pointer">
+        class="top-tab-btn py-1 sm:py-1.5 px-1 sm:px-2 rounded-md text-[11px] sm:text-xs font-medium transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 cursor-pointer">
         <i data-lucide="key-round" class="size-3.5"></i>
-        <span>Kunci</span>
+        <span class="truncate">Kunci</span>
       </button>
 
       <button type="button" onclick="switchTab('history')" id="top-nav-history"
-        class="top-tab-btn py-1.5 px-2 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 text-zinc-400 hover:text-zinc-200 cursor-pointer">
+        class="top-tab-btn py-1 sm:py-1.5 px-1 sm:px-2 rounded-md text-[11px] sm:text-xs font-medium transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 cursor-pointer">
         <i data-lucide="history" class="size-3.5"></i>
-        <span>Riwayat</span>
+        <span class="truncate">Riwayat</span>
       </button>
 
       <button type="button" onclick="switchTab('settings')" id="top-nav-settings"
-        class="top-tab-btn py-1.5 px-2 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 text-zinc-400 hover:text-zinc-200 cursor-pointer">
+        class="top-tab-btn py-1 sm:py-1.5 px-1 sm:px-2 rounded-md text-[11px] sm:text-xs font-medium transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 cursor-pointer">
         <i data-lucide="settings" class="size-3.5"></i>
-        <span>Setelan</span>
+        <span class="truncate">Setelan</span>
       </button>
     </div>
   </nav>
@@ -292,120 +272,120 @@
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <!-- MAIN SCROLLABLE CONTENT                                             -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <main class="flex-1 max-w-md w-full mx-auto p-4 pb-24 overflow-y-auto custom-scrollbar">
+  <main class="flex-1 max-w-md w-full mx-auto px-3 sm:px-4 py-3 sm:py-4 pb-24">
 
     <!-- ── TAB 1: KUNCI BARU (KEY GENERATOR) ── -->
-    <section id="tab-keygen" class="tab-content hidden space-y-4">
+    <section id="tab-keygen" class="tab-content hidden space-y-3.5">
 
       <!-- Quick Link to Devices Banner -->
       <div onclick="switchTab('devices')"
-        class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-3 shadow-xs flex items-center justify-between cursor-pointer hover:bg-zinc-900/90 transition-colors">
-        <div class="flex items-center gap-2.5">
-          <div class="size-8 rounded-lg border border-zinc-800 bg-zinc-950 flex items-center justify-center text-zinc-300">
+        class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-3 shadow-xs flex items-center justify-between cursor-pointer hover:bg-zinc-100/60 dark:hover:bg-zinc-900/90 transition-colors">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="size-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
             <i data-lucide="database" class="size-4"></i>
           </div>
-          <div>
-            <div class="text-xs font-semibold text-zinc-100 flex items-center gap-1.5">
-              <span>Database Lisensi Toko</span>
+          <div class="min-w-0">
+            <div class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+              <span class="truncate">Database Lisensi Toko</span>
               <span id="quickCountBadge"
-                class="inline-flex items-center rounded-full border border-zinc-700 bg-zinc-800 px-1.5 py-0.2 text-[9px] font-bold text-zinc-200">0</span>
+                class="inline-flex items-center rounded-full border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.2 text-[9px] font-bold text-zinc-800 dark:text-zinc-200">0</span>
             </div>
-            <div class="text-[11px] text-zinc-400">Monitoring &amp; kelola lisensi aktif</div>
+            <div class="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">Monitoring &amp; kelola lisensi aktif</div>
           </div>
         </div>
-        <i data-lucide="chevron-right" class="size-4 text-zinc-400"></i>
+        <i data-lucide="chevron-right" class="size-4 text-zinc-400 shrink-0 ml-1"></i>
       </div>
 
       <!-- Generator Card -->
-      <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 shadow-xs space-y-4">
-        <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-3.5 transition-colors">
+        <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800/80 pb-2.5">
           <div>
-            <h2 class="text-xs font-semibold text-zinc-100">Generate Kunci Aktivasi</h2>
-            <p class="text-[11px] text-zinc-400">Buat lisensi resmi perangkat toko</p>
+            <h2 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100">Generate Kunci Aktivasi</h2>
+            <p class="text-[11px] text-zinc-500 dark:text-zinc-400">Buat lisensi resmi perangkat toko</p>
           </div>
-          <span class="inline-flex items-center rounded-md border border-zinc-800 bg-zinc-950 px-2 py-0.5 text-[10px] font-mono font-medium text-zinc-400">
+          <span class="inline-flex items-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 py-0.5 text-[10px] font-mono font-medium text-zinc-600 dark:text-zinc-400">
             FNV-1a 64-bit
           </span>
         </div>
 
         <!-- Machine Hardware ID -->
-        <div class="space-y-1.5">
+        <div class="space-y-1">
           <div class="flex items-center justify-between">
-            <label class="text-xs font-medium text-zinc-300">Machine Hardware ID Toko</label>
+            <label class="text-xs font-medium text-zinc-700 dark:text-zinc-300">Machine Hardware ID</label>
             <button onclick="pasteHwid()"
-              class="text-[11px] text-zinc-400 hover:text-zinc-200 font-medium flex items-center gap-1 transition-colors">
+              class="text-[11px] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 font-medium flex items-center gap-1 transition-colors">
               <i data-lucide="clipboard" class="size-3"></i> Tempel
             </button>
           </div>
           <input id="hwidInput" type="text" placeholder="Contoh: RP-CTADM2-FDBF"
-            class="flex h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-1 font-mono text-xs uppercase text-zinc-100 shadow-xs placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400"
+            class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-1 font-mono text-xs uppercase text-zinc-900 dark:text-zinc-100 shadow-xs placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400"
             oninput="this.value = this.value.toUpperCase()" />
         </div>
 
         <!-- Catatan / Nama Toko / PIC -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-medium text-zinc-300">
-            Catatan / Nama Toko &amp; PIC <span class="text-zinc-500 font-normal">(Opsional)</span>
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            Catatan / Nama Toko &amp; PIC <span class="text-zinc-400 dark:text-zinc-500 font-normal">(Opsional)</span>
           </label>
-          <input id="notesInput" type="text" placeholder="Contoh: Kutabumi F703 - Kasir 1 (Andi)"
-            class="flex h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-1 text-xs text-zinc-100 shadow-xs placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
+          <input id="notesInput" type="text" placeholder="Contoh: Kutabumi F703 - Kasir 1"
+            class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-1 text-xs text-zinc-900 dark:text-zinc-100 shadow-xs placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
         </div>
 
         <!-- Durasi Masa Berlaku -->
-        <div class="space-y-2">
-          <label class="text-xs font-medium text-zinc-300">Masa Berlaku Lisensi</label>
+        <div class="space-y-1.5">
+          <label class="text-xs font-medium text-zinc-700 dark:text-zinc-300">Masa Berlaku Lisensi</label>
           <div class="grid grid-cols-3 gap-1.5">
             <button type="button" onclick="selectDuration('1m')"
-              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-100 border-zinc-100 text-zinc-950"
+              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs"
               data-dur="1m">1 Bulan</button>
             <button type="button" onclick="selectDuration('3m')"
-              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
               data-dur="3m">3 Bulan</button>
             <button type="button" onclick="selectDuration('6m')"
-              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
               data-dur="6m">6 Bulan</button>
             <button type="button" onclick="selectDuration('1y')"
-              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
               data-dur="1y">1 Tahun</button>
             <button type="button" onclick="selectDuration('custom')"
-              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
               data-dur="custom">Kustom</button>
             <button type="button" onclick="selectDuration('lifetime')"
-              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+              class="dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
               data-dur="lifetime">Lifetime</button>
           </div>
 
           <!-- Custom Date Input -->
           <div id="customDateWrap" class="mt-2 hidden">
-            <label class="text-[11px] text-zinc-400 block mb-1">Pilih Tanggal Berakhir:</label>
+            <label class="text-[11px] text-zinc-500 dark:text-zinc-400 block mb-1">Pilih Tanggal Berakhir:</label>
             <input id="customDateInput" type="date"
-              class="flex h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-1 font-mono text-xs text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400"
+              class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400"
               onchange="updateExpiryPreview()" />
           </div>
 
-          <div class="flex items-center justify-between text-[11px] px-1 pt-1">
-            <span class="text-zinc-400">Kedaluwarsa pada:</span>
-            <span id="expiryPreviewText" class="font-mono font-medium text-zinc-200">-</span>
+          <div class="flex items-center justify-between text-[11px] px-1 pt-0.5">
+            <span class="text-zinc-500 dark:text-zinc-400">Kedaluwarsa:</span>
+            <span id="expiryPreviewText" class="font-mono font-medium text-zinc-800 dark:text-zinc-200">-</span>
           </div>
         </div>
 
         <!-- Pre-Register Toggle -->
-        <div class="flex items-center justify-between p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+        <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
           <div class="space-y-0.5">
-            <div class="text-xs font-medium text-zinc-200">Daftarkan ke Supabase</div>
-            <div class="text-[10px] text-zinc-400">Simpan HWID &amp; catatan toko ke cloud</div>
+            <div class="text-xs font-medium text-zinc-800 dark:text-zinc-200">Daftarkan ke Supabase</div>
+            <div class="text-[10px] text-zinc-500 dark:text-zinc-400">Simpan HWID &amp; catatan toko ke cloud</div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
             <input id="preRegisterToggle" type="checkbox" checked class="sr-only peer">
             <div
-              class="w-9 h-5 bg-zinc-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-zinc-100 peer-checked:after:bg-zinc-950">
+              class="w-9 h-5 bg-zinc-300 dark:bg-zinc-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-zinc-900 dark:peer-checked:bg-zinc-100 dark:peer-checked:after:bg-zinc-950">
             </div>
           </label>
         </div>
 
         <!-- Action Button -->
         <button onclick="handleGenerate()" id="btnGenerate"
-          class="inline-flex h-9 w-full items-center justify-center rounded-lg bg-zinc-100 text-zinc-900 font-medium text-xs hover:bg-zinc-200 transition-colors cursor-pointer gap-2 shadow-xs">
+          class="inline-flex h-9 w-full items-center justify-center rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 font-medium text-xs transition-colors cursor-pointer gap-2 shadow-xs">
           <i data-lucide="key-round" class="size-3.5"></i>
           <span>Generate Kunci Aktivasi</span>
         </button>
@@ -413,52 +393,52 @@
 
       <!-- Result Card -->
       <div id="resultCard"
-        class="hidden rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 shadow-xs space-y-3">
-        <div class="flex items-center justify-between border-b border-zinc-800 pb-2.5">
-          <div class="flex items-center gap-1.5 text-zinc-200">
-            <i data-lucide="check-circle" class="size-4 text-emerald-400"></i>
+        class="hidden rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-3.5 sm:p-4 shadow-xs space-y-3 transition-colors">
+        <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
+          <div class="flex items-center gap-1.5 text-zinc-800 dark:text-zinc-200">
+            <i data-lucide="check-circle" class="size-4 text-emerald-500"></i>
             <span class="text-xs font-medium">Kunci Lisensi Siap Digunakan</span>
           </div>
           <span id="resStatusBadge"
-            class="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-400">
+            class="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-600 dark:text-emerald-400">
             Tersimpan
           </span>
         </div>
 
         <!-- Key Display Box -->
-        <div class="p-3 bg-zinc-950 rounded-lg border border-zinc-800 text-center select-all">
-          <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-medium mb-1">Kode Lisensi Resmi:</div>
+        <div class="p-3 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 text-center select-all">
+          <div class="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-medium mb-1">Kode Lisensi:</div>
           <div id="resKeyCode"
-            class="font-mono text-sm font-bold text-zinc-100 tracking-wider select-all">
+            class="font-mono text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100 tracking-wider select-all break-all">
             EDS-XXXXXXXX-XXXX
           </div>
         </div>
 
         <!-- Details Info -->
-        <div class="space-y-1.5 text-[11px] bg-zinc-950/60 p-2.5 rounded-lg border border-zinc-800/80">
-          <div class="flex justify-between">
-            <span class="text-zinc-400">HWID:</span>
-            <span id="resHwid" class="font-mono text-zinc-200 font-medium">-</span>
+        <div class="space-y-1.5 text-[11px] bg-zinc-50/70 dark:bg-zinc-950/60 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800/80">
+          <div class="flex justify-between gap-2">
+            <span class="text-zinc-500 dark:text-zinc-400 shrink-0">HWID:</span>
+            <span id="resHwid" class="font-mono text-zinc-800 dark:text-zinc-200 font-medium truncate">-</span>
           </div>
-          <div class="flex justify-between">
-            <span class="text-zinc-400">Catatan / Toko:</span>
-            <span id="resNotes" class="text-zinc-200">-</span>
+          <div class="flex justify-between gap-2">
+            <span class="text-zinc-500 dark:text-zinc-400 shrink-0">Catatan:</span>
+            <span id="resNotes" class="text-zinc-800 dark:text-zinc-200 truncate">-</span>
           </div>
-          <div class="flex justify-between">
-            <span class="text-zinc-400">Masa Berlaku:</span>
-            <span id="resExpiry" class="text-zinc-200 font-medium">-</span>
+          <div class="flex justify-between gap-2">
+            <span class="text-zinc-500 dark:text-zinc-400 shrink-0">Berlaku:</span>
+            <span id="resExpiry" class="text-zinc-800 dark:text-zinc-200 font-medium truncate">-</span>
           </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="grid grid-cols-2 gap-2 pt-1">
           <button onclick="copyKeyResult()"
-            class="inline-flex h-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-100 text-xs font-medium gap-1.5 transition-colors cursor-pointer">
+            class="inline-flex h-9 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-100 text-xs font-medium gap-1.5 transition-colors cursor-pointer">
             <i data-lucide="copy" class="size-3.5"></i>
             <span id="btnCopyLabel">Salin Kunci</span>
           </button>
           <button onclick="shareToWhatsApp()"
-            class="inline-flex h-9 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium gap-1.5 transition-colors cursor-pointer">
+            class="inline-flex h-9 items-center justify-center rounded-lg border border-emerald-600 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium gap-1.5 transition-colors cursor-pointer">
             <i data-lucide="message-circle" class="size-3.5"></i>
             <span>Kirim via WA</span>
           </button>
@@ -471,24 +451,25 @@
     <section id="tab-devices" class="tab-content space-y-3">
 
       <!-- Section Title Card -->
-      <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-3.5 shadow-xs flex items-center justify-between">
-        <div>
-          <h2 class="text-xs font-semibold text-zinc-100 flex items-center gap-1.5">
-            <i data-lucide="database" class="size-3.5 text-zinc-400"></i>
-            <span>Lisensi Terdaftar</span>
+      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3 sm:p-3.5 shadow-xs flex items-center justify-between gap-2 transition-colors">
+        <div class="min-w-0">
+          <h2 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+            <i data-lucide="database" class="size-3.5 text-zinc-500 dark:text-zinc-400 shrink-0"></i>
+            <span class="truncate">Lisensi Terdaftar</span>
           </h2>
-          <p class="text-[11px] text-zinc-400">Monitoring &amp; manajemen lisensi Supabase</p>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">Monitoring lisensi toko Supabase</p>
         </div>
 
-        <div class="flex items-center gap-1.5">
+        <div class="flex items-center gap-1.5 shrink-0">
           <button type="button" onclick="switchTab('keygen')"
-            class="inline-flex h-8 items-center justify-center rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-900 px-2.5 text-xs font-medium gap-1 transition-colors cursor-pointer"
+            class="inline-flex h-8 items-center justify-center rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 px-2.5 text-xs font-medium gap-1 transition-colors cursor-pointer shadow-xs"
             title="Buat Lisensi Baru">
             <i data-lucide="plus" class="size-3"></i>
-            <span>Kunci Baru</span>
+            <span class="hidden sm:inline">Kunci Baru</span>
+            <span class="sm:hidden">Baru</span>
           </button>
           <button type="button" onclick="loadDevices(true)"
-            class="inline-flex size-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer"
+            class="inline-flex size-8 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer"
             title="Muat Ulang dari Supabase">
             <i data-lucide="refresh-cw" class="size-3"></i>
           </button>
@@ -496,45 +477,45 @@
       </div>
 
       <!-- Stats Grid (shadcn Metric Cards) -->
-      <div class="grid grid-cols-4 gap-2">
-        <div class="rounded-lg border border-zinc-800 bg-zinc-900/40 p-2.5 text-center">
-          <div id="statTotal" class="text-sm font-bold text-zinc-100">0</div>
-          <div class="text-[10px] text-zinc-400 font-medium">Total</div>
+      <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
+        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
+          <div id="statTotal" class="text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100">0</div>
+          <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Total</div>
         </div>
-        <div class="rounded-lg border border-zinc-800 bg-zinc-900/40 p-2.5 text-center">
-          <div id="statActive" class="text-sm font-bold text-emerald-400">0</div>
-          <div class="text-[10px] text-zinc-400 font-medium">Aktif</div>
+        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
+          <div id="statActive" class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400">0</div>
+          <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Aktif</div>
         </div>
-        <div class="rounded-lg border border-zinc-800 bg-zinc-900/40 p-2.5 text-center">
-          <div id="statExpired" class="text-sm font-bold text-red-400">0</div>
-          <div class="text-[10px] text-zinc-400 font-medium">Expired</div>
+        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
+          <div id="statExpired" class="text-sm sm:text-base font-bold text-red-600 dark:text-red-400">0</div>
+          <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Expired</div>
         </div>
-        <div class="rounded-lg border border-zinc-800 bg-zinc-900/40 p-2.5 text-center">
-          <div id="statSuspended" class="text-sm font-bold text-amber-400">0</div>
-          <div class="text-[10px] text-zinc-400 font-medium">Blokir</div>
+        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
+          <div id="statSuspended" class="text-sm sm:text-base font-bold text-amber-600 dark:text-amber-400">0</div>
+          <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Blokir</div>
         </div>
       </div>
 
       <!-- Search & Filter Controls -->
-      <div class="space-y-2">
+      <div class="space-y-1.5">
         <div class="relative">
-          <i data-lucide="search" class="size-3.5 text-zinc-500 absolute left-3 top-2.5"></i>
-          <input id="deviceSearchInput" type="text" placeholder="Cari HWID, Kode, Toko, IP..." oninput="filterDevices()"
-            class="flex h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 pl-8 pr-3 py-1 text-xs text-zinc-100 shadow-xs placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
+          <i data-lucide="search" class="size-3.5 text-zinc-400 absolute left-3 top-2.5"></i>
+          <input id="deviceSearchInput" type="text" placeholder="Cari HWID, Kode, Toko..." oninput="filterDevices()"
+            class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 pl-8 pr-3 py-1 text-xs text-zinc-900 dark:text-zinc-100 shadow-xs placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
         </div>
 
         <div class="flex gap-1 overflow-x-auto pb-1 custom-scrollbar text-[11px]">
           <button onclick="setDeviceFilter('all')"
-            class="dev-filter-chip px-3 py-1 rounded-md font-medium bg-zinc-100 text-zinc-900 transition-colors"
+            class="dev-filter-chip px-2.5 sm:px-3 py-1 rounded-md font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-xs transition-colors shrink-0"
             data-filter="all">Semua</button>
           <button onclick="setDeviceFilter('active')"
-            class="dev-filter-chip px-3 py-1 rounded-md font-medium bg-zinc-900 text-zinc-400 border border-zinc-800 transition-colors"
+            class="dev-filter-chip px-2.5 sm:px-3 py-1 rounded-md font-medium bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors shrink-0"
             data-filter="active">Aktif</button>
           <button onclick="setDeviceFilter('expired')"
-            class="dev-filter-chip px-3 py-1 rounded-md font-medium bg-zinc-900 text-zinc-400 border border-zinc-800 transition-colors"
+            class="dev-filter-chip px-2.5 sm:px-3 py-1 rounded-md font-medium bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors shrink-0"
             data-filter="expired">Expired</button>
           <button onclick="setDeviceFilter('suspended')"
-            class="dev-filter-chip px-3 py-1 rounded-md font-medium bg-zinc-900 text-zinc-400 border border-zinc-800 transition-colors"
+            class="dev-filter-chip px-2.5 sm:px-3 py-1 rounded-md font-medium bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors shrink-0"
             data-filter="suspended">Blokir</button>
         </div>
       </div>
@@ -542,7 +523,7 @@
       <!-- Device List Container -->
       <div id="deviceListContainer" class="space-y-2.5">
         <div class="text-center py-10 text-zinc-500 text-xs flex flex-col items-center gap-2">
-          <div class="size-6 rounded-full border-2 border-zinc-700 border-t-zinc-200 animate-spin"></div>
+          <div class="size-6 rounded-full border-2 border-zinc-400 dark:border-zinc-700 border-t-zinc-900 dark:border-t-zinc-200 animate-spin"></div>
           <span>Menghubungkan ke database Supabase...</span>
         </div>
       </div>
@@ -551,13 +532,13 @@
 
     <!-- ── TAB 3: RIWAYAT GENERATE LOKAL ── -->
     <section id="tab-history" class="tab-content hidden space-y-3">
-      <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
+      <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
         <div>
-          <h2 class="text-xs font-semibold text-zinc-100">Riwayat Lisensi Dihasilkan</h2>
-          <p class="text-[11px] text-zinc-400">Tersimpan di memori perangkat ini</p>
+          <h2 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100">Riwayat Lisensi</h2>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400">Tersimpan di perangkat ini</p>
         </div>
         <button onclick="clearLocalHistory()"
-          class="text-[11px] text-red-400 hover:text-red-300 font-medium px-2 py-1 rounded-md hover:bg-red-500/10 transition-colors">
+          class="text-[11px] text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium px-2 py-1 rounded-md hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
           Hapus Semua
         </button>
       </div>
@@ -571,33 +552,33 @@
     <section id="tab-settings" class="tab-content hidden space-y-3">
 
       <!-- Admin Password Card -->
-      <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 shadow-xs space-y-3">
+      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-3 transition-colors">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="size-7 rounded-lg border border-zinc-800 bg-zinc-950 flex items-center justify-center text-zinc-300">
+          <div class="flex items-center gap-2 min-w-0">
+            <div class="size-7 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
               <i data-lucide="shield-check" class="size-3.5"></i>
             </div>
-            <div>
-              <h2 class="text-xs font-semibold text-zinc-100">Keamanan Administrator</h2>
-              <p class="text-[11px] text-zinc-400">Proteksi login akses dashboard</p>
+            <div class="min-w-0">
+              <h2 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">Keamanan Administrator</h2>
+              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">Proteksi login akses dashboard</p>
             </div>
           </div>
           <button onclick="handleLogout()"
-            class="inline-flex h-7 items-center rounded-md border border-red-500/20 bg-red-500/10 px-2 text-[11px] font-medium text-red-400 hover:bg-red-500/20 transition-colors">
+            class="inline-flex h-7 items-center rounded-md border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 px-2 text-[11px] font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors shrink-0">
             <i data-lucide="log-out" class="size-3 mr-1"></i>
             <span>Logout</span>
           </button>
         </div>
 
-        <div class="space-y-2 pt-2 border-t border-zinc-800">
-          <label class="text-[11px] text-zinc-400 block font-medium">
-            Ubah Password Admin (Default: <code class="text-zinc-200 font-mono">repotin2026</code>):
+        <div class="space-y-1.5 pt-2 border-t border-zinc-200 dark:border-zinc-800">
+          <label class="text-[11px] text-zinc-600 dark:text-zinc-400 block font-medium">
+            Ubah Password Admin (Default: <code class="text-zinc-800 dark:text-zinc-200 font-mono">repotin2026</code>):
           </label>
           <div class="flex gap-2">
             <input id="newAdminPasswordInput" type="password" placeholder="Password baru..."
-              class="flex h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-1 font-mono text-xs text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
+              class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
             <button onclick="saveNewAdminPassword()"
-              class="inline-flex h-9 items-center justify-center rounded-lg bg-zinc-100 px-4 text-xs font-medium text-zinc-900 hover:bg-zinc-200 shrink-0 transition-colors cursor-pointer">
+              class="inline-flex h-9 items-center justify-center rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-3.5 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 shrink-0 transition-colors cursor-pointer shadow-xs">
               Simpan
             </button>
           </div>
@@ -605,63 +586,63 @@
       </div>
 
       <!-- Cloud Status & Diagnostik Device Lain -->
-      <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 shadow-xs space-y-3">
+      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-3 transition-colors">
         <div class="flex items-center gap-2">
-          <div class="size-7 rounded-lg border border-zinc-800 bg-zinc-950 flex items-center justify-center text-zinc-300">
+          <div class="size-7 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center text-zinc-700 dark:text-zinc-300">
             <i data-lucide="cloud" class="size-3.5"></i>
           </div>
           <div>
-            <h2 class="text-xs font-semibold text-zinc-100">Status Akses &amp; Device Lain</h2>
-            <p class="text-[11px] text-zinc-400">Panduan buka di HP atau PC lain tanpa error 404</p>
+            <h2 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100">Status Akses &amp; Device Lain</h2>
+            <p class="text-[11px] text-zinc-500 dark:text-zinc-400">Panduan akses HP / PC lain</p>
           </div>
         </div>
 
         <!-- 404 Warning / Spelling Guide -->
-        <div class="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 space-y-1.5 text-xs">
-          <div class="font-semibold text-amber-300 flex items-center gap-1.5">
+        <div class="rounded-lg border border-amber-300 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/10 p-3 space-y-1.5 text-xs">
+          <div class="font-semibold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
             <i data-lucide="alert-triangle" class="size-3.5 shrink-0"></i>
-            <span>Solusi Jika di HP / PC Lain Muncul 404:</span>
+            <span>Jika di HP / PC Lain Muncul 404:</span>
           </div>
-          <p class="text-[11px] text-zinc-300 leading-relaxed">
-            1. <strong>Cek Ejaan URL:</strong> Wajib memakai akhiran <strong class="text-white">repotin_licence</strong> (huruf <code class="font-bold text-amber-200">c</code>), BUKAN <code class="line-through text-zinc-400">license</code> (huruf s).
+          <p class="text-[11px] text-zinc-700 dark:text-zinc-300 leading-relaxed">
+            1. <strong>Cek Ejaan:</strong> Wajib memakai akhiran <strong class="text-zinc-900 dark:text-white">repotin_licence</strong> (huruf <code class="font-bold text-amber-700 dark:text-amber-200">c</code>), BUKAN <code class="line-through text-zinc-500">license</code> (huruf s).
           </p>
-          <p class="text-[11px] text-zinc-300 leading-relaxed">
-            2. <strong>Cache Browser HP:</strong> Jika sebelumnya pernah membuka saat repo masih private, browser HP menyimpan cache 404. Gunakan tombol di bawah atau buka di <em>Mode Incognito / Tab Samaran</em>.
+          <p class="text-[11px] text-zinc-700 dark:text-zinc-300 leading-relaxed">
+            2. <strong>Cache Browser HP:</strong> Jika masih 404 lama, gunakan tombol di bawah atau buka di <em>Mode Incognito / Tab Samaran</em>.
           </p>
           <div class="pt-1">
             <button onclick="openFreshUrl()"
-              class="inline-flex h-8 w-full items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/20 px-3 text-xs font-medium text-amber-200 hover:bg-amber-500/30 transition-colors cursor-pointer gap-1.5">
+              class="inline-flex h-8 w-full items-center justify-center rounded-lg border border-amber-300 dark:border-amber-500/30 bg-amber-100 dark:bg-amber-500/20 px-3 text-xs font-medium text-amber-900 dark:text-amber-200 hover:bg-amber-200 dark:hover:bg-amber-500/30 transition-colors cursor-pointer gap-1.5">
               <i data-lucide="external-link" class="size-3"></i>
-              <span>Buka Link Bersih (Bypass Cache Browser)</span>
+              <span>Buka Link Bersih (Bypass Cache)</span>
             </button>
           </div>
         </div>
 
-        <div class="space-y-1.5 text-xs">
-          <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-950 border border-zinc-800">
-            <span class="text-zinc-400">Hosting Web App:</span>
-            <span class="font-medium text-zinc-200">GitHub Pages (Public HTTPS)</span>
+        <div class="space-y-1 text-xs">
+          <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+            <span class="text-zinc-500 dark:text-zinc-400">Hosting:</span>
+            <span class="font-medium text-zinc-800 dark:text-zinc-200">GitHub Pages (Public)</span>
           </div>
-          <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-950 border border-zinc-800">
-            <span class="text-zinc-400">Database Toko:</span>
-            <span class="font-medium text-emerald-400">Supabase Connected</span>
+          <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+            <span class="text-zinc-500 dark:text-zinc-400">Database:</span>
+            <span class="font-medium text-emerald-600 dark:text-emerald-400">Supabase Connected</span>
           </div>
-          <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-950 border border-zinc-800">
-            <span class="text-zinc-400">Target URL Resmi:</span>
-            <span class="font-mono text-[11px] text-zinc-200">jsteds.github.io/repotin_licence/</span>
+          <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+            <span class="text-zinc-500 dark:text-zinc-400">URL Resmi:</span>
+            <span class="font-mono text-[10px] text-zinc-800 dark:text-zinc-200 truncate">jsteds.github.io/repotin_licence/</span>
           </div>
         </div>
       </div>
 
       <!-- Guide Add to Home Screen -->
-      <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 shadow-xs space-y-2.5">
-        <div class="flex items-center gap-2 text-zinc-100 font-semibold text-xs">
-          <i data-lucide="smartphone" class="size-3.5 text-zinc-400"></i>
+      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-2 transition-colors">
+        <div class="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-semibold text-xs">
+          <i data-lucide="smartphone" class="size-3.5 text-zinc-500 dark:text-zinc-400"></i>
           <span>Pasang ke Layar Utama HP (PWA)</span>
         </div>
-        <ul class="text-[11px] text-zinc-400 space-y-1.5 list-disc list-inside">
-          <li><strong>iOS (Safari):</strong> Ketuk menu <em>Share</em> (ikon kotak panah atas) &gt; pilih <em>Add to Home Screen</em>.</li>
-          <li><strong>Android (Chrome):</strong> Ketuk menu titik tiga &gt; pilih <em>Tambahkan ke Layar Utama</em> (Install).</li>
+        <ul class="text-[11px] text-zinc-600 dark:text-zinc-400 space-y-1 list-disc list-inside">
+          <li><strong>iOS (Safari):</strong> Menu <em>Share</em> (ikon kotak panah atas) &gt; <em>Add to Home Screen</em>.</li>
+          <li><strong>Android (Chrome):</strong> Menu titik tiga &gt; <em>Tambahkan ke Layar Utama</em> (Install).</li>
         </ul>
       </div>
 
@@ -670,31 +651,31 @@
   </main>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- BOTTOM NAVIGATION BAR (shadcn Minimal Tabbar)                      -->
+  <!-- BOTTOM NAVIGATION BAR (shadcn Responsive Tabbar)                   -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/90 backdrop-blur-md border-t border-zinc-800 px-2 py-1.5">
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 px-2 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] transition-colors">
     <div class="max-w-md mx-auto grid grid-cols-4 gap-1">
       <button onclick="switchTab('devices')" id="nav-devices"
-        class="nav-btn flex flex-col items-center justify-center py-1 rounded-lg text-zinc-100 font-medium transition-colors relative cursor-pointer">
+        class="nav-btn flex flex-col items-center justify-center py-1 rounded-lg text-zinc-900 dark:text-zinc-100 font-medium transition-colors relative cursor-pointer">
         <i data-lucide="database" class="size-4 mb-0.5"></i>
         <span class="text-[10px]">Lisensi</span>
         <span id="badgeActiveCount" class="hidden absolute top-1 right-5 size-1.5 rounded-full bg-emerald-500"></span>
       </button>
 
       <button onclick="switchTab('keygen')" id="nav-keygen"
-        class="nav-btn flex flex-col items-center justify-center py-1 rounded-lg text-zinc-500 font-medium hover:text-zinc-300 transition-colors cursor-pointer">
+        class="nav-btn flex flex-col items-center justify-center py-1 rounded-lg text-zinc-400 dark:text-zinc-500 font-medium hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer">
         <i data-lucide="key-round" class="size-4 mb-0.5"></i>
         <span class="text-[10px]">Kunci Baru</span>
       </button>
 
       <button onclick="switchTab('history')" id="nav-history"
-        class="nav-btn flex flex-col items-center justify-center py-1 rounded-lg text-zinc-500 font-medium hover:text-zinc-300 transition-colors cursor-pointer">
+        class="nav-btn flex flex-col items-center justify-center py-1 rounded-lg text-zinc-400 dark:text-zinc-500 font-medium hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer">
         <i data-lucide="history" class="size-4 mb-0.5"></i>
         <span class="text-[10px]">Riwayat</span>
       </button>
 
       <button onclick="switchTab('settings')" id="nav-settings"
-        class="nav-btn flex flex-col items-center justify-center py-1 rounded-lg text-zinc-500 font-medium hover:text-zinc-300 transition-colors cursor-pointer">
+        class="nav-btn flex flex-col items-center justify-center py-1 rounded-lg text-zinc-400 dark:text-zinc-500 font-medium hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer">
         <i data-lucide="settings" class="size-4 mb-0.5"></i>
         <span class="text-[10px]">Setelan</span>
       </button>
@@ -705,31 +686,31 @@
   <!-- MODAL: EDIT CATATAN TOKO / USER                                     -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <div id="modalEditNotes"
-    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-zinc-950 border border-zinc-800 rounded-xl max-w-sm w-full p-4 space-y-3 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
-        <h3 class="text-xs font-semibold text-zinc-100 flex items-center gap-1.5">
-          <i data-lucide="edit-3" class="size-3.5 text-zinc-400"></i>
+    class="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-sm w-full p-4 space-y-3 shadow-2xl transition-colors">
+      <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
+        <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+          <i data-lucide="edit-3" class="size-3.5 text-zinc-500 dark:text-zinc-400"></i>
           <span>Ubah Catatan / Nama Toko</span>
         </h3>
-        <button onclick="closeModal('modalEditNotes')" class="text-zinc-400 hover:text-zinc-100 p-1">
+        <button onclick="closeModal('modalEditNotes')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-100 p-1">
           <i data-lucide="x" class="size-4"></i>
         </button>
       </div>
 
       <div class="space-y-1.5">
-        <div class="text-[11px] text-zinc-400">Perangkat: <span id="modalNotesHwid" class="font-mono text-zinc-100 font-bold"></span></div>
+        <div class="text-[11px] text-zinc-500 dark:text-zinc-400">Perangkat: <span id="modalNotesHwid" class="font-mono text-zinc-900 dark:text-zinc-100 font-bold break-all"></span></div>
         <input id="modalNotesInput" type="text" placeholder="Contoh: Kutabumi F703 - Kasir 1"
-          class="flex h-9 w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
+          class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 text-xs text-zinc-900 dark:text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
       </div>
 
       <div class="flex gap-2 pt-1">
         <button onclick="closeModal('modalEditNotes')"
-          class="flex-1 h-8 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 text-xs font-medium hover:bg-zinc-800 transition-colors">
+          class="flex-1 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-xs font-medium hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
           Batal
         </button>
         <button onclick="submitSaveNotes()" id="btnSaveNotes"
-          class="flex-1 h-8 rounded-lg bg-zinc-100 text-zinc-900 text-xs font-medium hover:bg-zinc-200 transition-colors">
+          class="flex-1 h-8 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors">
           Simpan
         </button>
       </div>
@@ -740,62 +721,62 @@
   <!-- MODAL: PERPANJANG MASA BERLAKU                                      -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <div id="modalExtendExpiry"
-    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-zinc-950 border border-zinc-800 rounded-xl max-w-sm w-full p-4 space-y-3 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
-        <h3 class="text-xs font-semibold text-zinc-100 flex items-center gap-1.5">
-          <i data-lucide="calendar-plus" class="size-3.5 text-zinc-400"></i>
-          <span>Perpanjang Masa Berlaku Lisensi</span>
+    class="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-sm w-full p-4 space-y-3 shadow-2xl transition-colors">
+      <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
+        <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+          <i data-lucide="calendar-plus" class="size-3.5 text-zinc-500 dark:text-zinc-400"></i>
+          <span>Perpanjang Masa Berlaku</span>
         </h3>
-        <button onclick="closeModal('modalExtendExpiry')" class="text-zinc-400 hover:text-zinc-100 p-1">
+        <button onclick="closeModal('modalExtendExpiry')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-100 p-1">
           <i data-lucide="x" class="size-4"></i>
         </button>
       </div>
 
       <div class="space-y-2">
-        <div class="text-[11px] text-zinc-400">Perangkat: <span id="modalExtendHwid" class="font-mono text-zinc-100 font-bold"></span></div>
+        <div class="text-[11px] text-zinc-500 dark:text-zinc-400">Perangkat: <span id="modalExtendHwid" class="font-mono text-zinc-900 dark:text-zinc-100 font-bold break-all"></span></div>
 
-        <label class="text-xs font-medium text-zinc-300 block">Pilih Durasi Tambahan:</label>
+        <label class="text-xs font-medium text-zinc-700 dark:text-zinc-300 block">Pilih Durasi Tambahan:</label>
         <div class="grid grid-cols-3 gap-1.5">
           <button type="button" onclick="setExtendDuration('1m')"
-            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-100 border-zinc-100 text-zinc-900"
+            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs"
             data-ext="1m">+1 Bulan</button>
           <button type="button" onclick="setExtendDuration('3m')"
-            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             data-ext="3m">+3 Bulan</button>
           <button type="button" onclick="setExtendDuration('6m')"
-            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             data-ext="6m">+6 Bulan</button>
           <button type="button" onclick="setExtendDuration('1y')"
-            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             data-ext="1y">+1 Tahun</button>
           <button type="button" onclick="setExtendDuration('lifetime')"
-            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             data-ext="lifetime">Lifetime</button>
           <button type="button" onclick="setExtendDuration('custom')"
-            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+            class="ext-btn h-8 rounded-lg text-xs font-medium border bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             data-ext="custom">Kustom</button>
         </div>
 
         <div id="modalExtendCustomWrap" class="hidden pt-1">
           <input id="modalExtendCustomDate" type="date"
-            class="flex h-9 w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1 font-mono text-xs text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400"
+            class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400"
             onchange="updateExtendPreview()" />
         </div>
 
-        <div class="p-2.5 rounded-lg bg-zinc-900 text-[11px] flex justify-between border border-zinc-800">
-          <span class="text-zinc-400">Tanggal Baru:</span>
-          <span id="modalExtendPreview" class="font-mono font-bold text-zinc-100">-</span>
+        <div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-900 text-[11px] flex justify-between border border-zinc-200 dark:border-zinc-800">
+          <span class="text-zinc-500 dark:text-zinc-400">Tanggal Baru:</span>
+          <span id="modalExtendPreview" class="font-mono font-bold text-zinc-900 dark:text-zinc-100">-</span>
         </div>
       </div>
 
       <div class="flex gap-2 pt-1">
         <button onclick="closeModal('modalExtendExpiry')"
-          class="flex-1 h-8 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 text-xs font-medium hover:bg-zinc-800 transition-colors">
+          class="flex-1 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-xs font-medium hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
           Batal
         </button>
         <button onclick="submitExtendExpiry()" id="btnSaveExtend"
-          class="flex-1 h-8 rounded-lg bg-zinc-100 text-zinc-900 text-xs font-medium hover:bg-zinc-200 transition-colors">
+          class="flex-1 h-8 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors">
           Terapkan
         </button>
       </div>
@@ -806,8 +787,8 @@
   <!-- TOAST NOTIFICATION (shadcn Sonner Pattern)                          -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <div id="toast"
-    class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-zinc-900/95 border border-zinc-800 text-zinc-100 px-4 py-2.5 rounded-lg shadow-xl flex items-center gap-2.5 text-xs opacity-0 translate-y-2 pointer-events-none transition-all duration-200 max-w-xs w-full">
-    <i id="toastIcon" data-lucide="check-circle" class="size-4 text-emerald-400 shrink-0"></i>
+    class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-white/95 dark:bg-zinc-900/95 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 px-4 py-2.5 rounded-lg shadow-xl flex items-center gap-2.5 text-xs opacity-0 translate-y-2 pointer-events-none transition-all duration-200 max-w-xs w-full">
+    <i id="toastIcon" data-lucide="check-circle" class="size-4 text-emerald-500 shrink-0"></i>
     <span id="toastMsg" class="flex-1 leading-tight font-medium">Berhasil</span>
   </div>
 
@@ -824,7 +805,7 @@
 
     var INJECTED_DEVICES = [];
 
-    // --- Safe Storage (Fallback Memori jika localStorage/sessionStorage diblokir di private iOS Safari / WebView) ---
+    // --- Safe Storage Helper (Memory fallback for private iOS/Android browsing) ---
     const memoryStore = {};
     const SafeStorage = {
       get: function (key) {
@@ -853,7 +834,6 @@
       }
     };
 
-    // Safe Session Storage Helper
     const SafeSession = {
       get: function (key) {
         try {
@@ -912,6 +892,54 @@
       history: savedHistory
     };
 
+    // --- Theme Controller (Dark / Light) ---
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.classList.contains("dark");
+      if (isDark) {
+        html.classList.remove("dark");
+        SafeStorage.set("repotin_theme", "light");
+        updateThemeState(false);
+      } else {
+        html.classList.add("dark");
+        SafeStorage.set("repotin_theme", "dark");
+        updateThemeState(true);
+      }
+      safeCreateIcons();
+    }
+
+    function updateThemeState(isDark) {
+      const btn = document.getElementById("themeBtn");
+      if (btn) {
+        btn.innerHTML = isDark
+          ? '<i data-lucide="moon" class="size-3 sm:size-3.5"></i>'
+          : '<i data-lucide="sun" class="size-3 sm:size-3.5 text-amber-500"></i>';
+      }
+      const metaTheme = document.getElementById("metaThemeColor");
+      if (metaTheme) {
+        metaTheme.setAttribute("content", isDark ? "#09090b" : "#f4f4f5");
+      }
+      // Refresh current views so state classes re-evaluate
+      selectDuration(state.selectedDuration);
+      setDeviceFilter(state.deviceFilter);
+    }
+
+    function applySavedTheme() {
+      var saved = SafeStorage.get("repotin_theme");
+      var isDark = true;
+      if (saved) {
+        isDark = saved === "dark";
+      } else if (typeof window !== "undefined" && window.matchMedia) {
+        isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      }
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+      updateThemeState(isDark);
+    }
+
     // --- FNV-1a 64-bit License Keygen Algorithm ---
     function generateLicenseKeyLocal(machineId, expiryDate) {
       const cleanId = (machineId || "").trim().toUpperCase().replace(/-/g, "").replace(/\s+/g, "");
@@ -945,9 +973,9 @@
       state.selectedDuration = dur;
       document.querySelectorAll(".dur-btn").forEach(btn => {
         if (btn.dataset.dur === dur) {
-          btn.className = "dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-100 border-zinc-100 text-zinc-950";
+          btn.className = "dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs";
         } else {
-          btn.className = "dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900";
+          btn.className = "dur-btn h-8 rounded-lg text-xs font-medium border transition-colors bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900";
         }
       });
 
@@ -983,10 +1011,10 @@
       const el = document.getElementById("expiryPreviewText");
       if (exp) {
         el.textContent = exp + " (" + formatRelativeDays(exp) + ")";
-        el.className = "font-mono font-medium text-zinc-200";
+        el.className = "font-mono font-medium text-zinc-800 dark:text-zinc-200";
       } else {
         el.textContent = "Permanen (Lifetime)";
-        el.className = "font-mono font-medium text-emerald-400";
+        el.className = "font-mono font-medium text-emerald-600 dark:text-emerald-400";
       }
     }
 
@@ -1015,12 +1043,11 @@
       const expiryDate = calculateTargetExpiry(state.selectedDuration);
       const btn = document.getElementById("btnGenerate");
       btn.disabled = true;
-      btn.innerHTML = '<div class="size-4 border-2 border-zinc-900 border-t-transparent rounded-full animate-spin"></div><span>Membuat Kunci...</span>';
+      btn.innerHTML = '<div class="size-4 border-2 border-white dark:border-zinc-900 border-t-transparent rounded-full animate-spin"></div><span>Membuat Kunci...</span>';
 
       try {
         const licenseCode = generateLicenseKeyLocal(hwid, expiryDate);
 
-        // Register to Supabase if toggle is enabled
         let registered = false;
         if (shouldPreRegister) {
           try {
@@ -1068,10 +1095,10 @@
         const badge = document.getElementById("resStatusBadge");
         if (shouldPreRegister) {
           badge.textContent = registered ? "Tersimpan di Cloud" : "Gagal Sync Cloud";
-          badge.className = registered ? "inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-400" : "inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[9px] font-semibold text-red-400";
+          badge.className = registered ? "inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-600 dark:text-emerald-400" : "inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[9px] font-semibold text-red-600 dark:text-red-400";
         } else {
           badge.textContent = "Offline Key";
-          badge.className = "inline-flex items-center rounded-full border border-zinc-700 bg-zinc-800 px-2 py-0.5 text-[9px] font-semibold text-zinc-300";
+          badge.className = "inline-flex items-center rounded-full border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-[9px] font-semibold text-zinc-700 dark:text-zinc-300";
         }
 
         document.getElementById("resultCard").classList.remove("hidden");
@@ -1122,7 +1149,7 @@
 
       if (!hasExistingData && container) {
         container.innerHTML = '<div class="text-center py-10 text-zinc-500 text-xs flex flex-col items-center gap-2">'
-          + '<div class="size-6 rounded-full border-2 border-zinc-700 border-t-zinc-200 animate-spin"></div>'
+          + '<div class="size-6 rounded-full border-2 border-zinc-400 dark:border-zinc-700 border-t-zinc-900 dark:border-t-zinc-200 animate-spin"></div>'
           + '<span>Menghubungkan ke database Supabase...</span>'
           + '</div>';
       }
@@ -1134,7 +1161,6 @@
       let devices = null;
       let lastError = null;
 
-      // STRATEGI 1: Direct fetch via query parameter
       try {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 6000);
@@ -1148,10 +1174,8 @@
         }
       } catch (err) {
         lastError = err;
-        console.warn("Strategi 1 gagal:", err);
       }
 
-      // STRATEGI 2: Direct fetch dengan headers
       if (!devices || devices.length === 0) {
         try {
           const controller = new AbortController();
@@ -1171,7 +1195,6 @@
           }
         } catch (err) {
           lastError = err;
-          console.warn("Strategi 2 gagal:", err);
         }
       }
 
@@ -1189,15 +1212,15 @@
       } else {
         const errMsg = lastError ? (lastError.message || lastError.toString()) : "Koneksi cloud timeout";
         if (container) {
-          container.innerHTML = '<div class="p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 text-xs text-center space-y-2">'
-            + '<i data-lucide="alert-triangle" class="size-5 mx-auto text-red-400"></i>'
+          container.innerHTML = '<div class="p-4 rounded-xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs text-center space-y-2">'
+            + '<i data-lucide="alert-triangle" class="size-5 mx-auto text-red-500 dark:text-red-400"></i>'
             + '<div class="font-semibold">Gagal Mengambil Data Lisensi</div>'
-            + '<p class="text-[11px] text-zinc-400">Tidak dapat terhubung ke server Supabase.</p>'
-            + '<div class="text-[10px] text-zinc-400 font-mono bg-zinc-950 p-2 rounded-lg border border-zinc-800 break-all text-left">'
+            + '<p class="text-[11px] text-zinc-600 dark:text-zinc-400">Tidak dapat terhubung ke server Supabase.</p>'
+            + '<div class="text-[10px] text-zinc-500 font-mono bg-white dark:bg-zinc-950 p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 break-all text-left">'
             + escapeHtml(errMsg)
             + '</div>'
             + '<div class="pt-1">'
-            + '<button onclick="loadDevices(true)" class="h-8 px-4 bg-zinc-100 text-zinc-900 rounded-lg text-xs font-medium hover:bg-zinc-200 transition-colors">Coba Lagi</button>'
+            + '<button onclick="loadDevices(true)" class="h-8 px-4 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 rounded-lg text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors">Coba Lagi</button>'
             + '</div>'
             + '</div>';
           safeCreateIcons();
@@ -1229,6 +1252,8 @@
 
       const topBadge = document.getElementById("topBadgeDeviceCount");
       if (topBadge) topBadge.textContent = total;
+      const topBadgeMobile = document.getElementById("topBadgeDeviceCountMobile");
+      if (topBadgeMobile) topBadgeMobile.textContent = total;
       const quickBadge = document.getElementById("quickCountBadge");
       if (quickBadge) quickBadge.textContent = total;
 
@@ -1244,9 +1269,9 @@
       state.deviceFilter = filter;
       document.querySelectorAll(".dev-filter-chip").forEach(chip => {
         if (chip.dataset.filter === filter) {
-          chip.className = "dev-filter-chip px-3 py-1 rounded-md font-medium bg-zinc-100 text-zinc-900 transition-colors";
+          chip.className = "dev-filter-chip px-2.5 sm:px-3 py-1 rounded-md font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-xs transition-colors shrink-0";
         } else {
-          chip.className = "dev-filter-chip px-3 py-1 rounded-md font-medium bg-zinc-900 text-zinc-400 border border-zinc-800 transition-colors";
+          chip.className = "dev-filter-chip px-2.5 sm:px-3 py-1 rounded-md font-medium bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors shrink-0";
         }
       });
       renderDeviceList();
@@ -1284,8 +1309,8 @@
 
       if (filtered.length === 0) {
         container.innerHTML = '<div class="text-center py-12 text-zinc-500 text-xs space-y-1">'
-          + '<i data-lucide="inbox" class="size-6 mx-auto text-zinc-600"></i>'
-          + '<p>Tidak ada perangkat yang cocok dengan kriteria filter.</p>'
+          + '<i data-lucide="inbox" class="size-6 mx-auto text-zinc-400 dark:text-zinc-600"></i>'
+          + '<p>Tidak ada perangkat yang cocok.</p>'
           + '</div>';
         safeCreateIcons();
         return;
@@ -1299,69 +1324,69 @@
 
         let statusBadge = "";
         if (isSuspended) {
-          statusBadge = '<span class="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[9px] font-semibold text-amber-400">DIBLOKIR</span>';
+          statusBadge = '<span class="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[9px] font-semibold text-amber-600 dark:text-amber-400 shrink-0">BLOKIR</span>';
         } else if (isExpired) {
-          statusBadge = '<span class="inline-flex items-center rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[9px] font-semibold text-red-400">EXPIRED</span>';
+          statusBadge = '<span class="inline-flex items-center rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[9px] font-semibold text-red-600 dark:text-red-400 shrink-0">EXPIRED</span>';
         } else {
-          statusBadge = '<span class="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-400">AKTIF</span>';
+          statusBadge = '<span class="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-600 dark:text-emerald-400 shrink-0">AKTIF</span>';
         }
 
         const countdown = formatRelativeDays(d.valid_until);
-        const notesDisplay = d.notes ? escapeHtml(d.notes) : '<span class="text-zinc-500 italic">Belum ada nama toko / catatan</span>';
-        const expiryText = d.valid_until ? (d.valid_until + ' (' + countdown + ')') : 'Lifetime (Permanen)';
-        const expiryClass = isExpired ? 'text-red-400' : 'text-zinc-200';
+        const notesDisplay = d.notes ? escapeHtml(d.notes) : '<span class="text-zinc-400 dark:text-zinc-500 italic">Belum ada catatan toko</span>';
+        const expiryText = d.valid_until ? (d.valid_until + ' (' + countdown + ')') : 'Lifetime';
+        const expiryClass = isExpired ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200';
         const suspendBtnClass = isSuspended
-          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
-          : 'border-zinc-800 bg-zinc-900 text-zinc-300 hover:bg-zinc-800';
+          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20'
+          : 'border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-800';
         const suspendIcon = isSuspended ? 'check-circle' : 'slash';
-        const suspendLabel = isSuspended ? 'Buka Kunci' : 'Kunci (Lock)';
+        const suspendLabel = isSuspended ? 'Buka' : 'Kunci';
 
-        return '<div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-3.5 shadow-xs space-y-2.5">'
+        return '<div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3 sm:p-3.5 shadow-xs space-y-2.5 transition-colors">'
           + '<div class="flex items-start justify-between gap-2">'
-            + '<div class="min-w-0">'
+            + '<div class="min-w-0 flex-1">'
               + '<div class="flex items-center gap-1.5 flex-wrap">'
-                + '<span class="font-mono text-xs font-semibold text-zinc-100 bg-zinc-950 px-2 py-0.5 rounded-md border border-zinc-800">'
+                + '<span class="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-950 px-2 py-0.5 rounded-md border border-zinc-200 dark:border-zinc-800 break-all">'
                   + escapeHtml(d.machine_id)
                 + '</span>'
                 + statusBadge
               + '</div>'
-              + '<div class="text-xs font-medium text-zinc-300 mt-1 flex items-center gap-1">'
-                + '<span>' + notesDisplay + '</span>'
-                + '<button type="button" onclick="handleEditNotes(' + idx + ')" class="text-zinc-400 hover:text-zinc-100 p-0.5">'
+              + '<div class="text-xs font-medium text-zinc-700 dark:text-zinc-300 mt-1 flex items-center gap-1 truncate">'
+                + '<span class="truncate">' + notesDisplay + '</span>'
+                + '<button type="button" onclick="handleEditNotes(' + idx + ')" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-100 p-0.5 shrink-0">'
                   + '<i data-lucide="edit-2" class="size-3"></i>'
                 + '</button>'
               + '</div>'
             + '</div>'
-            + '<button type="button" onclick="handleShareWA(' + idx + ')" class="size-8 rounded-lg border border-zinc-800 bg-zinc-950 text-emerald-400 hover:bg-zinc-900 flex items-center justify-center transition-colors shrink-0" title="Kirim ke WhatsApp">'
+            + '<button type="button" onclick="handleShareWA(' + idx + ')" class="size-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-emerald-600 dark:text-emerald-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 flex items-center justify-center transition-colors shrink-0" title="Kirim ke WhatsApp">'
               + '<i data-lucide="message-circle" class="size-3.5"></i>'
             + '</button>'
           + '</div>'
-          + '<div class="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800/80 space-y-1 text-[11px]">'
-            + '<div class="flex items-center justify-between">'
-              + '<span class="text-zinc-400">Kode Lisensi:</span>'
-              + '<span class="font-mono font-medium text-zinc-200 select-all">' + escapeHtml(d.registration_code || '-') + '</span>'
+          + '<div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800/80 space-y-1 text-[11px]">'
+            + '<div class="flex items-center justify-between gap-2">'
+              + '<span class="text-zinc-500 dark:text-zinc-400 shrink-0">Kode Lisensi:</span>'
+              + '<span class="font-mono font-medium text-zinc-800 dark:text-zinc-200 select-all truncate text-right">' + escapeHtml(d.registration_code || '-') + '</span>'
             + '</div>'
-            + '<div class="flex items-center justify-between">'
-              + '<span class="text-zinc-400">Masa Berlaku:</span>'
-              + '<span class="font-mono font-medium ' + expiryClass + '">' + expiryText + '</span>'
+            + '<div class="flex items-center justify-between gap-2">'
+              + '<span class="text-zinc-500 dark:text-zinc-400 shrink-0">Masa Berlaku:</span>'
+              + '<span class="font-mono font-medium ' + expiryClass + ' shrink-0">' + expiryText + '</span>'
             + '</div>'
-            + '<div class="flex items-center justify-between text-[10px] text-zinc-500 pt-0.5">'
+            + '<div class="flex items-center justify-between text-[10px] text-zinc-400 dark:text-zinc-500 pt-0.5">'
               + '<span>IP: ' + escapeHtml(d.device_ip || 'Offline') + '</span>'
               + '<span>Daftar: ' + (d.created_at || '').slice(0, 10) + '</span>'
             + '</div>'
           + '</div>'
           + '<div class="grid grid-cols-3 gap-1.5 pt-1 text-[11px]">'
-            + '<button type="button" onclick="handleOpenExtend(' + idx + ')" class="h-8 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 font-medium flex items-center justify-center gap-1 transition-colors">'
-              + '<i data-lucide="calendar-plus" class="size-3 text-zinc-400"></i>'
-              + '<span>Perpanjang</span>'
+            + '<button type="button" onclick="handleOpenExtend(' + idx + ')" class="h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-medium flex items-center justify-center gap-1 transition-colors">'
+              + '<i data-lucide="calendar-plus" class="size-3 text-zinc-500 dark:text-zinc-400"></i>'
+              + '<span class="truncate">Perpanjang</span>'
             + '</button>'
             + '<button type="button" onclick="handleToggleSuspend(' + idx + ')" class="h-8 rounded-lg border ' + suspendBtnClass + ' font-medium flex items-center justify-center gap-1 transition-colors">'
               + '<i data-lucide="' + suspendIcon + '" class="size-3"></i>'
-              + '<span>' + suspendLabel + '</span>'
+              + '<span class="truncate">' + suspendLabel + '</span>'
             + '</button>'
-            + '<button type="button" onclick="handleDeleteDevice(' + idx + ')" class="h-8 rounded-lg border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium flex items-center justify-center gap-1 transition-colors">'
+            + '<button type="button" onclick="handleDeleteDevice(' + idx + ')" class="h-8 rounded-lg border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 font-medium flex items-center justify-center gap-1 transition-colors">'
               + '<i data-lucide="trash-2" class="size-3"></i>'
-              + '<span>Hapus</span>'
+              + '<span class="truncate">Hapus</span>'
             + '</button>'
           + '</div>'
         + '</div>';
@@ -1467,9 +1492,9 @@
       state.extendDuration = ext;
       document.querySelectorAll(".ext-btn").forEach(b => {
         if (b.dataset.ext === ext) {
-          b.className = "ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-100 border-zinc-100 text-zinc-900";
+          b.className = "ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs";
         } else {
-          b.className = "ext-btn h-8 rounded-lg text-xs font-medium border bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900";
+          b.className = "ext-btn h-8 rounded-lg text-xs font-medium border bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900";
         }
       });
 
@@ -1503,10 +1528,10 @@
       const p = document.getElementById("modalExtendPreview");
       if (targetDate) {
         p.textContent = targetDate + " (" + formatRelativeDays(targetDate) + ")";
-        p.className = "font-mono font-medium text-emerald-400";
+        p.className = "font-mono font-medium text-emerald-600 dark:text-emerald-400";
       } else {
         p.textContent = "Permanen (Lifetime)";
-        p.className = "font-mono font-medium text-zinc-200";
+        p.className = "font-mono font-medium text-zinc-800 dark:text-zinc-200";
       }
     }
 
@@ -1677,18 +1702,18 @@
       }
 
       container.innerHTML = state.history.map(function(item, idx) {
-        return '<div class="p-3 bg-zinc-900/60 border border-zinc-800 rounded-lg space-y-1.5 text-xs">'
-          + '<div class="flex items-center justify-between">'
-            + '<span class="font-mono font-medium text-zinc-100 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">' + escapeHtml(item.hwid) + '</span>'
-            + '<span class="text-[10px] text-zinc-500">' + (item.createdAt || '').slice(0, 16).replace('T', ' ') + '</span>'
+        return '<div class="p-3 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-lg space-y-1.5 text-xs transition-colors">'
+          + '<div class="flex items-center justify-between gap-2">'
+            + '<span class="font-mono font-medium text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-950 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-800 truncate">' + escapeHtml(item.hwid) + '</span>'
+            + '<span class="text-[10px] text-zinc-400 dark:text-zinc-500 shrink-0">' + (item.createdAt || '').slice(0, 16).replace('T', ' ') + '</span>'
           + '</div>'
-          + '<div class="font-mono font-bold text-zinc-200 select-all">' + escapeHtml(item.code) + '</div>'
-          + '<div class="flex items-center justify-between text-[11px] text-zinc-400">'
-            + '<span>' + escapeHtml(item.notes || 'Tanpa catatan') + '</span>'
-            + '<span class="text-zinc-200">' + (item.validUntil || 'Lifetime') + '</span>'
+          + '<div class="font-mono font-bold text-zinc-800 dark:text-zinc-200 select-all truncate">' + escapeHtml(item.code) + '</div>'
+          + '<div class="flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400">'
+            + '<span class="truncate">' + escapeHtml(item.notes || 'Tanpa catatan') + '</span>'
+            + '<span class="text-zinc-700 dark:text-zinc-200 shrink-0 font-medium">' + (item.validUntil || 'Lifetime') + '</span>'
           + '</div>'
           + '<div class="pt-1 flex justify-end">'
-            + '<button type="button" onclick="copyHistoryKey(' + idx + ')" class="text-[10px] text-zinc-300 hover:text-white px-2 py-1 rounded bg-zinc-800 border border-zinc-700">Salin Kunci</button>'
+            + '<button type="button" onclick="copyHistoryKey(' + idx + ')" class="text-[10px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition-colors">Salin Kunci</button>'
           + '</div>'
         + '</div>';
       }).join("");
@@ -1805,7 +1830,6 @@
       showToast("Password Admin berhasil diperbarui!");
     }
 
-    // Helper: Buka URL Bersih Bebas Cache
     function openFreshUrl() {
       const ts = Date.now();
       window.location.href = "https://jsteds.github.io/repotin_licence/?v=" + ts;
@@ -1818,24 +1842,32 @@
 
       // Update bottom nav
       document.querySelectorAll(".nav-btn").forEach(btn => {
-        btn.classList.remove("text-zinc-100");
-        btn.classList.add("text-zinc-500");
+        btn.classList.remove("text-zinc-900", "dark:text-zinc-100");
+        btn.classList.add("text-zinc-400", "dark:text-zinc-500");
       });
       const activeNav = document.getElementById("nav-" + tab);
       if (activeNav) {
-        activeNav.classList.add("text-zinc-100");
-        activeNav.classList.remove("text-zinc-500");
+        activeNav.classList.add("text-zinc-900", "dark:text-zinc-100");
+        activeNav.classList.remove("text-zinc-400", "dark:text-zinc-500");
       }
 
       // Update top segmented tab bar
       document.querySelectorAll(".top-tab-btn").forEach(btn => {
-        btn.classList.remove("bg-zinc-800", "text-zinc-100", "shadow-xs");
-        btn.classList.add("text-zinc-400");
+        btn.classList.remove(
+          "bg-white", "dark:bg-zinc-800",
+          "text-zinc-900", "dark:text-zinc-100",
+          "shadow-xs", "border", "border-zinc-200/60", "dark:border-transparent"
+        );
+        btn.classList.add("text-zinc-500", "dark:text-zinc-400");
       });
       const activeTopNav = document.getElementById("top-nav-" + tab);
       if (activeTopNav) {
-        activeTopNav.classList.remove("text-zinc-400");
-        activeTopNav.classList.add("bg-zinc-800", "text-zinc-100", "shadow-xs");
+        activeTopNav.classList.remove("text-zinc-500", "dark:text-zinc-400");
+        activeTopNav.classList.add(
+          "bg-white", "dark:bg-zinc-800",
+          "text-zinc-900", "dark:text-zinc-100",
+          "shadow-xs", "border", "border-zinc-200/60", "dark:border-transparent"
+        );
       }
 
       const targetEl = document.getElementById("tab-" + tab);
@@ -1857,10 +1889,10 @@
       m.textContent = msg;
       if (isError) {
         icon.setAttribute("data-lucide", "alert-circle");
-        icon.className = "size-4 text-red-400 shrink-0";
+        icon.className = "size-4 text-red-500 shrink-0";
       } else {
         icon.setAttribute("data-lucide", "check-circle");
-        icon.className = "size-4 text-emerald-400 shrink-0";
+        icon.className = "size-4 text-emerald-500 shrink-0";
       }
       safeCreateIcons();
 
@@ -1884,19 +1916,6 @@
       return "Expired " + Math.abs(diffDays) + " hari lalu";
     }
 
-    function toggleTheme() {
-      const html = document.documentElement;
-      const isDark = html.classList.contains("dark");
-      if (isDark) {
-        html.classList.remove("dark");
-        document.getElementById("themeBtn").innerHTML = '<i data-lucide="sun" class="size-3.5 text-amber-400"></i>';
-      } else {
-        html.classList.add("dark");
-        document.getElementById("themeBtn").innerHTML = '<i data-lucide="moon" class="size-3.5"></i>';
-      }
-      safeCreateIcons();
-    }
-
     function escapeHtml(str) {
       return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
@@ -1907,6 +1926,7 @@
 
     // --- Expose All Handlers to Window ---
     const globalHandlers = {
+      applySavedTheme,
       calculateTargetExpiry,
       checkAuthOnStartup,
       clearLocalHistory,
@@ -1952,7 +1972,8 @@
       toggleTheme,
       updateDeviceStats,
       updateExpiryPreview,
-      updateExtendPreview
+      updateExtendPreview,
+      updateThemeState
     };
     for (let fnName in globalHandlers) {
       window[fnName] = globalHandlers[fnName];
@@ -1960,6 +1981,7 @@
 
     // --- App Init ---
     function initApp() {
+      applySavedTheme();
       safeCreateIcons();
       updateExpiryPreview();
       renderHistory();
