@@ -1164,7 +1164,7 @@
       try {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 6000);
-        const queryUrl = CONFIG.supabaseUrl + "/rest/v1/device_registrations?select=*&order=created_at.desc&apikey=" + encodeURIComponent(CONFIG.supabaseKey);
+        const queryUrl = CONFIG.supabaseUrl + "/rest/v1/device_registrations?select=*&status=neq.deleted&order=created_at.desc&apikey=" + encodeURIComponent(CONFIG.supabaseKey);
         const res = await fetch(queryUrl, { signal: controller.signal });
         clearTimeout(timer);
         if (res.ok) {
@@ -1180,7 +1180,7 @@
         try {
           const controller = new AbortController();
           const timer = setTimeout(() => controller.abort(), 6000);
-          const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?select=*&order=created_at.desc", {
+          const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?select=*&status=neq.deleted&order=created_at.desc", {
             headers: {
               "apikey": CONFIG.supabaseKey,
               "Authorization": "Bearer " + CONFIG.supabaseKey
@@ -1200,12 +1200,24 @@
 
       if (refreshBtn) refreshBtn.classList.remove("animate-spin");
 
+      // Filter out deleted items & locally cached deleted HWIDs
+      let deletedCache = [];
+      try {
+        const raw = SafeStorage.get("repotin_deleted_hwids");
+        if (raw) deletedCache = JSON.parse(raw);
+      } catch (e) {}
+
+      if (devices && Array.isArray(devices)) {
+        devices = devices.filter(d => d && d.status !== "deleted" && !deletedCache.includes(d.machine_id));
+      }
+
       if (devices && Array.isArray(devices) && devices.length > 0) {
         state.devices = devices;
         updateDeviceStats();
         renderDeviceList();
         if (isManual) showToast("Data lisensi diperbarui!");
       } else if (hasExistingData) {
+        state.devices = state.devices.filter(d => d && d.status !== "deleted" && !deletedCache.includes(d.machine_id));
         updateDeviceStats();
         renderDeviceList();
         if (isManual) showToast("Menggunakan data lokal", true);
@@ -1236,7 +1248,7 @@
       let suspended = 0;
 
       state.devices.forEach(d => {
-        if (d.status === "suspended") {
+        if (d.status === "suspended" || d.status === "banned" || d.status === "revoke") {
           suspended++;
         } else if (d.valid_until && d.valid_until < today) {
           expired++;
@@ -1287,7 +1299,7 @@
       const today = new Date().toISOString().slice(0, 10);
 
       let filtered = state.devices.filter(d => {
-        const isSuspended = d.status === "suspended";
+        const isSuspended = d.status === "suspended" || d.status === "banned" || d.status === "revoke";
         const isExpired = d.valid_until && d.valid_until < today;
         const isActive = !isSuspended && !isExpired;
 
@@ -1319,7 +1331,7 @@
       state.lastFiltered = filtered;
 
       container.innerHTML = filtered.map((d, idx) => {
-        const isSuspended = d.status === "suspended";
+        const isSuspended = d.status === "suspended" || d.status === "banned" || d.status === "revoke";
         const isExpired = d.valid_until && d.valid_until < today;
 
         let statusBadge = "";
@@ -1640,23 +1652,70 @@
 
       try {
         let deletedOk = false;
+
+        // Langkah 1: Coba Hard Delete permanen ke Supabase
         try {
           const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?machine_id=eq." + encodeURIComponent(hwid), {
             method: "DELETE",
             headers: {
               "apikey": CONFIG.supabaseKey,
-              "Authorization": "Bearer " + CONFIG.supabaseKey
+              "Authorization": "Bearer " + CONFIG.supabaseKey,
+              "Prefer": "return=representation"
             }
           });
-          if (res.ok) deletedOk = true;
+          if (res.ok) {
+            const data = await res.json().catch(() => []);
+            if (Array.isArray(data) && data.length > 0) {
+              deletedOk = true;
+            }
+          }
         } catch (e) {
-          console.warn("Direct delete error:", e);
+          console.warn("Direct hard delete warning:", e);
+        }
+
+        // Langkah 2: Jika Hard Delete diblokir oleh RLS Supabase (0 baris), jalankan Soft Delete (status = 'deleted')
+        if (!deletedOk) {
+          try {
+            const resPatch = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?machine_id=eq." + encodeURIComponent(hwid), {
+              method: "PATCH",
+              headers: {
+                "apikey": CONFIG.supabaseKey,
+                "Authorization": "Bearer " + CONFIG.supabaseKey,
+                "Content-Type": "application/json",
+                "Prefer": "return=representation"
+              },
+              body: JSON.stringify({
+                status: "deleted",
+                updated_at: new Date().toISOString()
+              })
+            });
+            if (resPatch.ok) {
+              const patchedData = await resPatch.json().catch(() => []);
+              if (Array.isArray(patchedData) && patchedData.length > 0) {
+                deletedOk = true;
+              }
+            }
+          } catch (e) {
+            console.warn("Soft delete fallback warning:", e);
+          }
         }
 
         if (!deletedOk) {
           throw new Error("Gagal menghapus perangkat dari cloud");
         }
 
+        // Simpan ke cache lokal deleted HWID agar sinkronisasi refresh 100% konsisten
+        try {
+          let deletedCache = [];
+          const raw = SafeStorage.get("repotin_deleted_hwids");
+          if (raw) deletedCache = JSON.parse(raw);
+          if (!deletedCache.includes(hwid)) {
+            deletedCache.push(hwid);
+            SafeStorage.set("repotin_deleted_hwids", JSON.stringify(deletedCache));
+          }
+        } catch (e) {}
+
+        // Update state dan tampilan
         state.devices = state.devices.filter(d => d.machine_id !== hwid);
         updateDeviceStats();
         renderDeviceList();
