@@ -3,8 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>Repotin License Manager</title>
 
   <!-- Anti-Cache & Mobile Network Resilience Headers -->
@@ -49,7 +48,8 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       max-width: 100vw;
       overflow-x: hidden;
       margin: 0;
@@ -87,7 +87,8 @@
   </style>
 </head>
 
-<body class="bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 min-h-screen flex flex-col font-sans antialiased selection:bg-zinc-200 dark:selection:bg-zinc-800 transition-colors duration-150">
+<body
+  class="bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 min-h-screen flex flex-col font-sans antialiased selection:bg-zinc-200 dark:selection:bg-zinc-800 transition-colors duration-150">
 
   <!-- DIAGNOSTIC ERROR BANNER -->
   <div id="diagBanner"
@@ -126,11 +127,13 @@
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <div id="loginScreen"
     class="fixed inset-0 z-50 bg-zinc-100/95 dark:bg-zinc-950/95 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-4 overflow-y-auto transition-all duration-300">
-    <div class="w-full max-w-sm rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 p-5 sm:p-6 shadow-2xl backdrop-blur-xl space-y-5 my-auto">
-      
+    <div
+      class="w-full max-w-sm rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 p-5 sm:p-6 shadow-2xl backdrop-blur-xl space-y-5 my-auto">
+
       <!-- Brand & Header -->
       <div class="text-center space-y-1.5">
-        <div class="inline-flex size-10 sm:size-11 items-center justify-center rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-zinc-100 font-mono font-bold text-lg shadow-xs mb-1">
+        <div
+          class="inline-flex size-10 sm:size-11 items-center justify-center rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-zinc-100 font-mono font-bold text-lg shadow-xs mb-1">
           R
         </div>
         <h1 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">Repotin License Manager</h1>
@@ -149,8 +152,7 @@
         <!-- Username Field -->
         <div class="space-y-1">
           <label class="text-xs font-medium text-zinc-700 dark:text-zinc-300">Username</label>
-          <input type="text" id="loginUsername" required autocomplete="username"
-            placeholder="admin" value="admin"
+          <input type="text" id="loginUsername" required autocomplete="username" placeholder="admin" value="admin"
             class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-1 text-xs text-zinc-900 dark:text-zinc-100 shadow-xs placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
         </div>
 
@@ -185,7 +187,8 @@
       </form>
 
       <!-- Footer Info -->
-      <div class="text-center text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-500 flex items-center justify-center gap-1.5 pt-1">
+      <div
+        class="text-center text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-500 flex items-center justify-center gap-1.5 pt-1">
         <i data-lucide="shield-check" class="size-3.5 text-zinc-400 dark:text-zinc-500"></i>
         <span>Supabase REST Cloud • TLS 1.3</span>
       </div>
@@ -195,16 +198,20 @@
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <!-- HEADER (shadcn Responsive App Header)                               -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <header class="sticky top-0 z-40 bg-white/85 dark:bg-zinc-950/85 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800/80 px-3 sm:px-4 py-2 sm:py-2.5 transition-colors">
+  <header
+    class="sticky top-0 z-40 bg-white/85 dark:bg-zinc-950/85 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800/80 px-3 sm:px-4 py-2 sm:py-2.5 transition-colors">
     <div class="max-w-md mx-auto flex items-center justify-between gap-2">
       <div class="flex items-center gap-2 min-w-0">
-        <div class="size-7 sm:size-8 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-900 dark:text-zinc-100 font-mono font-bold text-xs shadow-xs shrink-0">
+        <div
+          class="size-7 sm:size-8 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-900 dark:text-zinc-100 font-mono font-bold text-xs shadow-xs shrink-0">
           R
         </div>
         <div class="min-w-0">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <h1 class="text-xs font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 leading-none truncate">Repotin Companion</h1>
-            <span class="inline-flex items-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 px-1.5 py-0.2 text-[9px] font-medium text-zinc-600 dark:text-zinc-400 shrink-0">
+            <h1 class="text-xs font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 leading-none truncate">
+              Repotin Companion</h1>
+            <span
+              class="inline-flex items-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 px-1.5 py-0.2 text-[9px] font-medium text-zinc-600 dark:text-zinc-400 shrink-0">
               Pages
             </span>
           </div>
@@ -236,13 +243,16 @@
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <!-- TOP SEGMENTED NAVIGATION TABS (Mobile-Fit Layout)                  -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <nav class="sticky top-[45px] sm:top-[49px] z-30 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-2 sm:px-3 py-1.5 sm:py-2 transition-colors">
-    <div class="max-w-md mx-auto grid grid-cols-4 gap-1 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
+  <nav
+    class="sticky top-[45px] sm:top-[49px] z-30 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-2 sm:px-3 py-1.5 sm:py-2 transition-colors">
+    <div
+      class="max-w-md mx-auto grid grid-cols-4 gap-1 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
       <button type="button" onclick="switchTab('devices')" id="top-nav-devices"
         class="top-tab-btn py-1 sm:py-1.5 px-1 sm:px-2 rounded-md text-[11px] sm:text-xs font-medium transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs border border-zinc-200/60 dark:border-transparent cursor-pointer">
         <div class="flex items-center gap-1">
           <i data-lucide="database" class="size-3.5 text-zinc-700 dark:text-zinc-300"></i>
-          <span id="topBadgeDeviceCountMobile" class="sm:hidden text-[9px] font-bold px-1 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 leading-tight">0</span>
+          <span id="topBadgeDeviceCountMobile"
+            class="sm:hidden text-[9px] font-bold px-1 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 leading-tight">0</span>
         </div>
         <span class="truncate">Lisensi</span>
         <span id="topBadgeDeviceCount"
@@ -281,7 +291,8 @@
       <div onclick="switchTab('devices')"
         class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-3 shadow-xs flex items-center justify-between cursor-pointer hover:bg-zinc-100/60 dark:hover:bg-zinc-900/90 transition-colors">
         <div class="flex items-center gap-2.5 min-w-0">
-          <div class="size-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
+          <div
+            class="size-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
             <i data-lucide="database" class="size-4"></i>
           </div>
           <div class="min-w-0">
@@ -290,20 +301,23 @@
               <span id="quickCountBadge"
                 class="inline-flex items-center rounded-full border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.2 text-[9px] font-bold text-zinc-800 dark:text-zinc-200">0</span>
             </div>
-            <div class="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">Monitoring &amp; kelola lisensi aktif</div>
+            <div class="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">Monitoring &amp; kelola lisensi aktif
+            </div>
           </div>
         </div>
         <i data-lucide="chevron-right" class="size-4 text-zinc-400 shrink-0 ml-1"></i>
       </div>
 
       <!-- Generator Card -->
-      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-3.5 transition-colors">
+      <div
+        class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-3.5 transition-colors">
         <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800/80 pb-2.5">
           <div>
             <h2 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100">Generate Kunci Aktivasi</h2>
             <p class="text-[11px] text-zinc-500 dark:text-zinc-400">Buat lisensi resmi perangkat toko</p>
           </div>
-          <span class="inline-flex items-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 py-0.5 text-[10px] font-mono font-medium text-zinc-600 dark:text-zinc-400">
+          <span
+            class="inline-flex items-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 py-0.5 text-[10px] font-mono font-medium text-zinc-600 dark:text-zinc-400">
             FNV-1a 64-bit
           </span>
         </div>
@@ -370,7 +384,8 @@
         </div>
 
         <!-- Pre-Register Toggle -->
-        <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+        <div
+          class="flex items-center justify-between p-2.5 sm:p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
           <div class="space-y-0.5">
             <div class="text-xs font-medium text-zinc-800 dark:text-zinc-200">Daftarkan ke Supabase</div>
             <div class="text-[10px] text-zinc-500 dark:text-zinc-400">Simpan HWID &amp; catatan toko ke cloud</div>
@@ -381,6 +396,39 @@
               class="w-9 h-5 bg-zinc-300 dark:bg-zinc-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-zinc-900 dark:peer-checked:bg-zinc-100 dark:peer-checked:after:bg-zinc-950">
             </div>
           </label>
+        </div>
+
+        <!-- Fitur Lisensi Toggles (Proteksi Layar & Mode Kamuflase) -->
+        <div class="space-y-2 p-2.5 sm:p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+          <div class="text-xs font-semibold text-zinc-800 dark:text-zinc-200 flex items-center justify-between">
+            <span class="flex items-center gap-1.5">
+              <i data-lucide="sliders" class="size-3.5 text-zinc-500"></i>
+              Hak Akses Fitur Aplikasi
+            </span>
+            <span class="text-[10px] text-zinc-400 font-normal">Izin Pengguna</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5 text-xs">
+            <label class="flex items-center justify-between gap-2 p-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors">
+              <div class="flex items-center gap-2 min-w-0">
+                <i data-lucide="shield-check" class="size-3.5 text-indigo-500 shrink-0"></i>
+                <div class="min-w-0">
+                  <div class="font-medium text-zinc-900 dark:text-zinc-100 text-[11px] truncate">Proteksi Layar</div>
+                  <div class="text-[9px] text-zinc-400 truncate">Anti-Screen Capture</div>
+                </div>
+              </div>
+              <input id="genFeatScreenProtect" type="checkbox" checked class="size-4 rounded accent-zinc-900 dark:accent-zinc-100 cursor-pointer">
+            </label>
+            <label class="flex items-center justify-between gap-2 p-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors">
+              <div class="flex items-center gap-2 min-w-0">
+                <i data-lucide="eye" class="size-3.5 text-purple-500 shrink-0"></i>
+                <div class="min-w-0">
+                  <div class="font-medium text-zinc-900 dark:text-zinc-100 text-[11px] truncate">Mode Kamuflase</div>
+                  <div class="text-[9px] text-zinc-400 truncate">Samarkan Icon &amp; Judul</div>
+                </div>
+              </div>
+              <input id="genFeatCamouflage" type="checkbox" checked class="size-4 rounded accent-zinc-900 dark:accent-zinc-100 cursor-pointer">
+            </label>
+          </div>
         </div>
 
         <!-- Action Button -->
@@ -406,8 +454,10 @@
         </div>
 
         <!-- Key Display Box -->
-        <div class="p-3 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 text-center select-all">
-          <div class="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-medium mb-1">Kode Lisensi:</div>
+        <div
+          class="p-3 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 text-center select-all">
+          <div class="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-medium mb-1">Kode
+            Lisensi:</div>
           <div id="resKeyCode"
             class="font-mono text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100 tracking-wider select-all break-all">
             EDS-XXXXXXXX-XXXX
@@ -415,7 +465,8 @@
         </div>
 
         <!-- Details Info -->
-        <div class="space-y-1.5 text-[11px] bg-zinc-50/70 dark:bg-zinc-950/60 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800/80">
+        <div
+          class="space-y-1.5 text-[11px] bg-zinc-50/70 dark:bg-zinc-950/60 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800/80">
           <div class="flex justify-between gap-2">
             <span class="text-zinc-500 dark:text-zinc-400 shrink-0">HWID:</span>
             <span id="resHwid" class="font-mono text-zinc-800 dark:text-zinc-200 font-medium truncate">-</span>
@@ -451,7 +502,8 @@
     <section id="tab-devices" class="tab-content space-y-3">
 
       <!-- Section Title Card -->
-      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3 sm:p-3.5 shadow-xs flex items-center justify-between gap-2 transition-colors">
+      <div
+        class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3 sm:p-3.5 shadow-xs flex items-center justify-between gap-2 transition-colors">
         <div class="min-w-0">
           <h2 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
             <i data-lucide="database" class="size-3.5 text-zinc-500 dark:text-zinc-400 shrink-0"></i>
@@ -478,19 +530,23 @@
 
       <!-- Stats Grid (shadcn Metric Cards) -->
       <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
-        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
+        <div
+          class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
           <div id="statTotal" class="text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100">0</div>
           <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Total</div>
         </div>
-        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
+        <div
+          class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
           <div id="statActive" class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400">0</div>
           <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Aktif</div>
         </div>
-        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
+        <div
+          class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
           <div id="statExpired" class="text-sm sm:text-base font-bold text-red-600 dark:text-red-400">0</div>
           <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Expired</div>
         </div>
-        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
+        <div
+          class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-2 sm:p-2.5 text-center transition-colors">
           <div id="statSuspended" class="text-sm sm:text-base font-bold text-amber-600 dark:text-amber-400">0</div>
           <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Blokir</div>
         </div>
@@ -523,7 +579,9 @@
       <!-- Device List Container -->
       <div id="deviceListContainer" class="space-y-2.5">
         <div class="text-center py-10 text-zinc-500 text-xs flex flex-col items-center gap-2">
-          <div class="size-6 rounded-full border-2 border-zinc-400 dark:border-zinc-700 border-t-zinc-900 dark:border-t-zinc-200 animate-spin"></div>
+          <div
+            class="size-6 rounded-full border-2 border-zinc-400 dark:border-zinc-700 border-t-zinc-900 dark:border-t-zinc-200 animate-spin">
+          </div>
           <span>Menghubungkan ke database Supabase...</span>
         </div>
       </div>
@@ -552,10 +610,12 @@
     <section id="tab-settings" class="tab-content hidden space-y-3">
 
       <!-- Admin Password Card -->
-      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-3 transition-colors">
+      <div
+        class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-3 transition-colors">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2 min-w-0">
-            <div class="size-7 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
+            <div
+              class="size-7 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
               <i data-lucide="shield-check" class="size-3.5"></i>
             </div>
             <div class="min-w-0">
@@ -586,9 +646,11 @@
       </div>
 
       <!-- Cloud Status & Diagnostik Device Lain -->
-      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-3 transition-colors">
+      <div
+        class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-3 transition-colors">
         <div class="flex items-center gap-2">
-          <div class="size-7 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center text-zinc-700 dark:text-zinc-300">
+          <div
+            class="size-7 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center text-zinc-700 dark:text-zinc-300">
             <i data-lucide="cloud" class="size-3.5"></i>
           </div>
           <div>
@@ -598,16 +660,21 @@
         </div>
 
         <!-- 404 Warning / Spelling Guide -->
-        <div class="rounded-lg border border-amber-300 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/10 p-3 space-y-1.5 text-xs">
+        <div
+          class="rounded-lg border border-amber-300 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/10 p-3 space-y-1.5 text-xs">
           <div class="font-semibold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
             <i data-lucide="alert-triangle" class="size-3.5 shrink-0"></i>
             <span>Jika di HP / PC Lain Muncul 404:</span>
           </div>
           <p class="text-[11px] text-zinc-700 dark:text-zinc-300 leading-relaxed">
-            1. <strong>Cek Ejaan:</strong> Wajib memakai akhiran <strong class="text-zinc-900 dark:text-white">repotin_licence</strong> (huruf <code class="font-bold text-amber-700 dark:text-amber-200">c</code>), BUKAN <code class="line-through text-zinc-500">license</code> (huruf s).
+            1. <strong>Cek Ejaan:</strong> Wajib memakai akhiran <strong
+              class="text-zinc-900 dark:text-white">repotin_licence</strong> (huruf <code
+              class="font-bold text-amber-700 dark:text-amber-200">c</code>), BUKAN <code
+              class="line-through text-zinc-500">license</code> (huruf s).
           </p>
           <p class="text-[11px] text-zinc-700 dark:text-zinc-300 leading-relaxed">
-            2. <strong>Cache Browser HP:</strong> Jika masih 404 lama, gunakan tombol di bawah atau buka di <em>Mode Incognito / Tab Samaran</em>.
+            2. <strong>Cache Browser HP:</strong> Jika masih 404 lama, gunakan tombol di bawah atau buka di <em>Mode
+              Incognito / Tab Samaran</em>.
           </p>
           <div class="pt-1">
             <button onclick="openFreshUrl()"
@@ -619,29 +686,35 @@
         </div>
 
         <div class="space-y-1 text-xs">
-          <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+          <div
+            class="flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
             <span class="text-zinc-500 dark:text-zinc-400">Hosting:</span>
             <span class="font-medium text-zinc-800 dark:text-zinc-200">GitHub Pages (Public)</span>
           </div>
-          <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+          <div
+            class="flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
             <span class="text-zinc-500 dark:text-zinc-400">Database:</span>
             <span class="font-medium text-emerald-600 dark:text-emerald-400">Supabase Connected</span>
           </div>
-          <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+          <div
+            class="flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
             <span class="text-zinc-500 dark:text-zinc-400">URL Resmi:</span>
-            <span class="font-mono text-[10px] text-zinc-800 dark:text-zinc-200 truncate">jsteds.github.io/repotin_licence/</span>
+            <span
+              class="font-mono text-[10px] text-zinc-800 dark:text-zinc-200 truncate">jsteds.github.io/repotin_licence/</span>
           </div>
         </div>
       </div>
 
       <!-- Guide Add to Home Screen -->
-      <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-2 transition-colors">
+      <div
+        class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3.5 sm:p-4 shadow-xs space-y-2 transition-colors">
         <div class="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-semibold text-xs">
           <i data-lucide="smartphone" class="size-3.5 text-zinc-500 dark:text-zinc-400"></i>
           <span>Pasang ke Layar Utama HP (PWA)</span>
         </div>
         <ul class="text-[11px] text-zinc-600 dark:text-zinc-400 space-y-1 list-disc list-inside">
-          <li><strong>iOS (Safari):</strong> Menu <em>Share</em> (ikon kotak panah atas) &gt; <em>Add to Home Screen</em>.</li>
+          <li><strong>iOS (Safari):</strong> Menu <em>Share</em> (ikon kotak panah atas) &gt; <em>Add to Home
+              Screen</em>.</li>
           <li><strong>Android (Chrome):</strong> Menu titik tiga &gt; <em>Tambahkan ke Layar Utama</em> (Install).</li>
         </ul>
       </div>
@@ -653,7 +726,8 @@
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <!-- BOTTOM NAVIGATION BAR (shadcn Responsive Tabbar)                   -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 px-2 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] transition-colors">
+  <nav
+    class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 px-2 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] transition-colors">
     <div class="max-w-md mx-auto grid grid-cols-4 gap-1">
       <button onclick="switchTab('devices')" id="nav-devices"
         class="nav-btn flex flex-col items-center justify-center py-1 rounded-lg text-zinc-900 dark:text-zinc-100 font-medium transition-colors relative cursor-pointer">
@@ -687,19 +761,22 @@
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <div id="modalEditNotes"
     class="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden">
-    <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-sm w-full p-4 space-y-3 shadow-2xl transition-colors">
+    <div
+      class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-sm w-full p-4 space-y-3 shadow-2xl transition-colors">
       <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
         <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
           <i data-lucide="edit-3" class="size-3.5 text-zinc-500 dark:text-zinc-400"></i>
           <span>Ubah Catatan / Nama Toko</span>
         </h3>
-        <button onclick="closeModal('modalEditNotes')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-100 p-1">
+        <button onclick="closeModal('modalEditNotes')"
+          class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-100 p-1">
           <i data-lucide="x" class="size-4"></i>
         </button>
       </div>
 
       <div class="space-y-1.5">
-        <div class="text-[11px] text-zinc-500 dark:text-zinc-400">Perangkat: <span id="modalNotesHwid" class="font-mono text-zinc-900 dark:text-zinc-100 font-bold break-all"></span></div>
+        <div class="text-[11px] text-zinc-500 dark:text-zinc-400">Perangkat: <span id="modalNotesHwid"
+            class="font-mono text-zinc-900 dark:text-zinc-100 font-bold break-all"></span></div>
         <input id="modalNotesInput" type="text" placeholder="Contoh: Kutabumi F703 - Kasir 1"
           class="flex h-9 w-full rounded-lg border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 text-xs text-zinc-900 dark:text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400" />
       </div>
@@ -722,19 +799,22 @@
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <div id="modalExtendExpiry"
     class="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden">
-    <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-sm w-full p-4 space-y-3 shadow-2xl transition-colors">
+    <div
+      class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-sm w-full p-4 space-y-3 shadow-2xl transition-colors">
       <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
         <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
           <i data-lucide="calendar-plus" class="size-3.5 text-zinc-500 dark:text-zinc-400"></i>
           <span>Perpanjang Masa Berlaku</span>
         </h3>
-        <button onclick="closeModal('modalExtendExpiry')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-100 p-1">
+        <button onclick="closeModal('modalExtendExpiry')"
+          class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-100 p-1">
           <i data-lucide="x" class="size-4"></i>
         </button>
       </div>
 
       <div class="space-y-2">
-        <div class="text-[11px] text-zinc-500 dark:text-zinc-400">Perangkat: <span id="modalExtendHwid" class="font-mono text-zinc-900 dark:text-zinc-100 font-bold break-all"></span></div>
+        <div class="text-[11px] text-zinc-500 dark:text-zinc-400">Perangkat: <span id="modalExtendHwid"
+            class="font-mono text-zinc-900 dark:text-zinc-100 font-bold break-all"></span></div>
 
         <label class="text-xs font-medium text-zinc-700 dark:text-zinc-300 block">Pilih Durasi Tambahan:</label>
         <div class="grid grid-cols-3 gap-1.5">
@@ -764,7 +844,8 @@
             onchange="updateExtendPreview()" />
         </div>
 
-        <div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-900 text-[11px] flex justify-between border border-zinc-200 dark:border-zinc-800">
+        <div
+          class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-900 text-[11px] flex justify-between border border-zinc-200 dark:border-zinc-800">
           <span class="text-zinc-500 dark:text-zinc-400">Tanggal Baru:</span>
           <span id="modalExtendPreview" class="font-mono font-bold text-zinc-900 dark:text-zinc-100">-</span>
         </div>
@@ -778,6 +859,94 @@
         <button onclick="submitExtendExpiry()" id="btnSaveExtend"
           class="flex-1 h-8 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors">
           Terapkan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- MODAL: KELOLA FITUR LISENSI (shadcn Dialog Pattern)                 -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div id="modalManageFeatures"
+    class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 hidden">
+    <div
+      class="w-full max-w-sm sm:max-w-md rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800/80 pb-2.5">
+        <div>
+          <h3 class="text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100">Kelola Fitur Lisensi</h3>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400">Atur ketersediaan fitur aplikasi untuk perangkat ini</p>
+        </div>
+        <button type="button" onclick="closeModal('modalManageFeatures')"
+          class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1 cursor-pointer">
+          <i data-lucide="x" class="size-4"></i>
+        </button>
+      </div>
+
+      <div class="p-2.5 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 text-[11px] space-y-1">
+        <div class="flex justify-between items-center">
+          <span class="text-zinc-500 dark:text-zinc-400">Target HWID:</span>
+          <span id="modalFeaturesHwid" class="font-mono font-bold text-zinc-900 dark:text-zinc-100"></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-zinc-500 dark:text-zinc-400">Catatan Toko:</span>
+          <span id="modalFeaturesNotes" class="text-zinc-700 dark:text-zinc-300 truncate max-w-[200px]"></span>
+        </div>
+      </div>
+
+      <div class="space-y-2.5">
+        <!-- Fitur 1: Proteksi Layar -->
+        <div class="p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/50 space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="size-7 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                <i data-lucide="shield-check" class="size-4"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-zinc-900 dark:text-zinc-100">Proteksi Layar</div>
+                <div class="text-[10px] text-zinc-500 dark:text-zinc-400">Anti-Screen Capture</div>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input id="modalFeatScreenProtection" type="checkbox" class="sr-only peer">
+              <div class="w-9 h-5 bg-zinc-300 dark:bg-zinc-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 dark:peer-checked:bg-indigo-500 dark:peer-checked:after:bg-white"></div>
+            </label>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Blokir rekaman layar &amp; remote desktop viewer. Jika dinonaktifkan, <strong>opsi Proteksi Layar tidak akan terlihat</strong> oleh user di aplikasi.
+          </p>
+        </div>
+
+        <!-- Fitur 2: Mode Kamuflase -->
+        <div class="p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/50 space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="size-7 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                <i data-lucide="eye" class="size-4"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-zinc-900 dark:text-zinc-100">Mode Kamuflase</div>
+                <div class="text-[10px] text-zinc-500 dark:text-zinc-400">Disguise Icon &amp; Judul Jendela</div>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input id="modalFeatCamouflage" type="checkbox" class="sr-only peer">
+              <div class="w-9 h-5 bg-zinc-300 dark:bg-zinc-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600 dark:peer-checked:bg-purple-500 dark:peer-checked:after:bg-white"></div>
+            </label>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Samarkan tampilan jendela menyerupai software lain (Excel, Kalkulator, dll). Jika dinonaktifkan, <strong>opsi Mode Kamuflase tidak akan terlihat</strong> oleh user dan otomatis dinetralkan.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-1 border-t border-zinc-200 dark:border-zinc-800">
+        <button type="button" onclick="closeModal('modalManageFeatures')"
+          class="h-8 px-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 font-medium text-xs transition-colors cursor-pointer">
+          Batal
+        </button>
+        <button type="button" id="btnSaveFeatures" onclick="submitSaveFeatures()"
+          class="h-8 px-4 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 font-medium text-xs transition-colors cursor-pointer shadow-xs">
+          Simpan Fitur
         </button>
       </div>
     </div>
@@ -889,8 +1058,41 @@
       editingHwid: "",
       extendingHwid: "",
       extendDuration: "1m",
+      managingFeaturesHwid: "",
       history: savedHistory
     };
+
+    // --- Feature Access Helpers (Anti-Screen Capture & Mode Kamuflase) ---
+    function parseFeatures(deviceOrNotes) {
+      let screen_protection = true;
+      let camouflage = true;
+      let text = typeof deviceOrNotes === "object" && deviceOrNotes !== null ? (deviceOrNotes.notes || "") : (deviceOrNotes || "");
+      if (typeof text === "string") {
+        const match = text.match(/\[features:([^\]]+)\]/i);
+        if (match) {
+          const parts = match[1].split(",");
+          for (const p of parts) {
+            const [k, v] = p.split("=").map(s => s.trim().toLowerCase());
+            if (k === "screen_protect" || k === "screen_protection") screen_protection = v === "1" || v === "true";
+            if (k === "camouflage" || k === "kamuflase") camouflage = v === "1" || v === "true";
+          }
+        }
+      }
+      return { screen_protection, camouflage };
+    }
+
+    function embedFeaturesInNotes(originalNotes, features) {
+      let cleanNotes = (originalNotes || "").replace(/\s*\[features:[^\]]+\]/gi, "").trim();
+      const s = features.screen_protection ? 1 : 0;
+      const c = features.camouflage ? 1 : 0;
+      const tag = "[features:screen_protect=" + s + ",camouflage=" + c + "]";
+      return cleanNotes ? (cleanNotes + " " + tag) : tag;
+    }
+
+    function getDisplayNotes(notes) {
+      if (!notes) return "";
+      return notes.replace(/\s*\[features:[^\]]+\]/gi, "").trim();
+    }
 
     // --- Theme Controller (Dark / Light) ---
     function toggleTheme() {
@@ -1032,8 +1234,11 @@
 
     async function handleGenerate() {
       const hwid = document.getElementById("hwidInput").value.trim().toUpperCase();
-      const notes = document.getElementById("notesInput").value.trim();
+      const rawNotes = document.getElementById("notesInput").value.trim();
       const shouldPreRegister = document.getElementById("preRegisterToggle").checked;
+      const featScreen = document.getElementById("genFeatScreenProtect") ? document.getElementById("genFeatScreenProtect").checked : true;
+      const featCamou = document.getElementById("genFeatCamouflage") ? document.getElementById("genFeatCamouflage").checked : true;
+      const notes = embedFeaturesInNotes(rawNotes, { screen_protection: featScreen, camouflage: featCamou });
 
       if (!hwid || hwid.length < 5) {
         showToast("Masukkan Machine Hardware ID yang valid!", true);
@@ -1063,7 +1268,7 @@
                 machine_id: hwid,
                 registration_code: licenseCode,
                 valid_until: expiryDate,
-                notes: notes || null,
+                notes: notes,
                 status: "active",
                 device_ip: "Mobile Cloud",
                 updated_at: new Date().toISOString()
@@ -1079,7 +1284,7 @@
         state.currentGenerated = {
           hwid,
           code: licenseCode,
-          notes,
+          notes: rawNotes,
           validUntil: expiryDate,
           createdAt: new Date().toISOString()
         };
@@ -1089,7 +1294,7 @@
         // Display Result Card
         document.getElementById("resKeyCode").textContent = licenseCode;
         document.getElementById("resHwid").textContent = hwid;
-        document.getElementById("resNotes").textContent = notes || "(Tanpa Catatan)";
+        document.getElementById("resNotes").textContent = rawNotes || "(Tanpa Catatan)";
         document.getElementById("resExpiry").textContent = expiryDate ? (expiryDate + " (" + formatRelativeDays(expiryDate) + ")") : "Permanen (Lifetime)";
 
         const badge = document.getElementById("resStatusBadge");
@@ -1205,7 +1410,7 @@
       try {
         const raw = SafeStorage.get("repotin_deleted_hwids");
         if (raw) deletedCache = JSON.parse(raw);
-      } catch (e) {}
+      } catch (e) { }
 
       if (devices && Array.isArray(devices)) {
         devices = devices.filter(d => d && d.status !== "deleted" && !deletedCache.includes(d.machine_id));
@@ -1344,7 +1549,8 @@
         }
 
         const countdown = formatRelativeDays(d.valid_until);
-        const notesDisplay = d.notes ? escapeHtml(d.notes) : '<span class="text-zinc-400 dark:text-zinc-500 italic">Belum ada catatan toko</span>';
+        const cleanNotes = getDisplayNotes(d.notes);
+        const notesDisplay = cleanNotes ? escapeHtml(cleanNotes) : '<span class="text-zinc-400 dark:text-zinc-500 italic">Belum ada catatan toko</span>';
         const expiryText = d.valid_until ? (d.valid_until + ' (' + countdown + ')') : 'Lifetime';
         const expiryClass = isExpired ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200';
         const suspendBtnClass = isSuspended
@@ -1353,55 +1559,73 @@
         const suspendIcon = isSuspended ? 'check-circle' : 'slash';
         const suspendLabel = isSuspended ? 'Buka' : 'Kunci';
 
+        const feats = parseFeatures(d.notes);
+        const featScreenBadge = feats.screen_protection
+          ? '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20"><i data-lucide="shield-check" class="size-2.5"></i> Proteksi Layar</span>'
+          : '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-400 border border-zinc-200 dark:border-zinc-700 line-through"><i data-lucide="shield-off" class="size-2.5"></i> Proteksi Layar</span>';
+        const featCamouBadge = feats.camouflage
+          ? '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20"><i data-lucide="eye" class="size-2.5"></i> Kamuflase</span>'
+          : '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-400 border border-zinc-200 dark:border-zinc-700 line-through"><i data-lucide="eye-off" class="size-2.5"></i> Kamuflase</span>';
+
         return '<div class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-3 sm:p-3.5 shadow-xs space-y-2.5 transition-colors">'
           + '<div class="flex items-start justify-between gap-2">'
-            + '<div class="min-w-0 flex-1">'
-              + '<div class="flex items-center gap-1.5 flex-wrap">'
-                + '<span class="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-950 px-2 py-0.5 rounded-md border border-zinc-200 dark:border-zinc-800 break-all">'
-                  + escapeHtml(d.machine_id)
-                + '</span>'
-                + statusBadge
-              + '</div>'
-              + '<div class="text-xs font-medium text-zinc-700 dark:text-zinc-300 mt-1 flex items-center gap-1 truncate">'
-                + '<span class="truncate">' + notesDisplay + '</span>'
-                + '<button type="button" onclick="handleEditNotes(' + idx + ')" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-100 p-0.5 shrink-0">'
-                  + '<i data-lucide="edit-2" class="size-3"></i>'
-                + '</button>'
-              + '</div>'
-            + '</div>'
-            + '<button type="button" onclick="handleShareWA(' + idx + ')" class="size-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-emerald-600 dark:text-emerald-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 flex items-center justify-center transition-colors shrink-0" title="Kirim ke WhatsApp">'
-              + '<i data-lucide="message-circle" class="size-3.5"></i>'
-            + '</button>'
+          + '<div class="min-w-0 flex-1">'
+          + '<div class="flex items-center gap-1.5 flex-wrap">'
+          + '<span class="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-950 px-2 py-0.5 rounded-md border border-zinc-200 dark:border-zinc-800 break-all">'
+          + escapeHtml(d.machine_id)
+          + '</span>'
+          + statusBadge
           + '</div>'
-          + '<div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800/80 space-y-1 text-[11px]">'
-            + '<div class="flex items-center justify-between gap-2">'
-              + '<span class="text-zinc-500 dark:text-zinc-400 shrink-0">Kode Lisensi:</span>'
-              + '<span class="font-mono font-medium text-zinc-800 dark:text-zinc-200 select-all truncate text-right">' + escapeHtml(d.registration_code || '-') + '</span>'
-            + '</div>'
-            + '<div class="flex items-center justify-between gap-2">'
-              + '<span class="text-zinc-500 dark:text-zinc-400 shrink-0">Masa Berlaku:</span>'
-              + '<span class="font-mono font-medium ' + expiryClass + ' shrink-0">' + expiryText + '</span>'
-            + '</div>'
-            + '<div class="flex items-center justify-between text-[10px] text-zinc-400 dark:text-zinc-500 pt-0.5">'
-              + '<span>IP: ' + escapeHtml(d.device_ip || 'Offline') + '</span>'
-              + '<span>Daftar: ' + (d.created_at || '').slice(0, 10) + '</span>'
-            + '</div>'
+          + '<div class="text-xs font-medium text-zinc-700 dark:text-zinc-300 mt-1 flex items-center gap-1 truncate">'
+          + '<span class="truncate">' + notesDisplay + '</span>'
+          + '<button type="button" onclick="handleEditNotes(' + idx + ')" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-100 p-0.5 shrink-0" title="Edit Catatan Toko">'
+          + '<i data-lucide="edit-2" class="size-3"></i>'
+          + '</button>'
           + '</div>'
-          + '<div class="grid grid-cols-3 gap-1.5 pt-1 text-[11px]">'
-            + '<button type="button" onclick="handleOpenExtend(' + idx + ')" class="h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-medium flex items-center justify-center gap-1 transition-colors">'
-              + '<i data-lucide="calendar-plus" class="size-3 text-zinc-500 dark:text-zinc-400"></i>'
-              + '<span class="truncate">Perpanjang</span>'
-            + '</button>'
-            + '<button type="button" onclick="handleToggleSuspend(' + idx + ')" class="h-8 rounded-lg border ' + suspendBtnClass + ' font-medium flex items-center justify-center gap-1 transition-colors">'
-              + '<i data-lucide="' + suspendIcon + '" class="size-3"></i>'
-              + '<span class="truncate">' + suspendLabel + '</span>'
-            + '</button>'
-            + '<button type="button" onclick="handleDeleteDevice(' + idx + ')" class="h-8 rounded-lg border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 font-medium flex items-center justify-center gap-1 transition-colors">'
-              + '<i data-lucide="trash-2" class="size-3"></i>'
-              + '<span class="truncate">Hapus</span>'
-            + '</button>'
           + '</div>'
-        + '</div>';
+          + '<button type="button" onclick="handleShareWA(' + idx + ')" class="size-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-emerald-600 dark:text-emerald-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 flex items-center justify-center transition-colors shrink-0" title="Kirim ke WhatsApp">'
+          + '<i data-lucide="message-circle" class="size-3.5"></i>'
+          + '</button>'
+          + '</div>'
+          + '<div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800/80 space-y-1.5 text-[11px]">'
+          + '<div class="flex items-center justify-between gap-2">'
+          + '<span class="text-zinc-500 dark:text-zinc-400 shrink-0">Kode Lisensi:</span>'
+          + '<span class="font-mono font-medium text-zinc-800 dark:text-zinc-200 select-all truncate text-right">' + escapeHtml(d.registration_code || '-') + '</span>'
+          + '</div>'
+          + '<div class="flex items-center justify-between gap-2">'
+          + '<span class="text-zinc-500 dark:text-zinc-400 shrink-0">Masa Berlaku:</span>'
+          + '<span class="font-mono font-medium ' + expiryClass + ' shrink-0">' + expiryText + '</span>'
+          + '</div>'
+          + '<div class="flex items-center justify-between text-[10px] text-zinc-400 dark:text-zinc-500 pt-0.5">'
+          + '<span>IP: ' + escapeHtml(d.device_ip || 'Offline') + '</span>'
+          + '<span>Daftar: ' + (d.created_at || '').slice(0, 10) + '</span>'
+          + '</div>'
+          + '<div class="flex items-center justify-between gap-1 pt-1.5 border-t border-zinc-200/70 dark:border-zinc-800/70">'
+          + '<span class="text-zinc-500 dark:text-zinc-400 text-[10px] font-medium shrink-0">Hak Fitur:</span>'
+          + '<div class="flex items-center gap-1 flex-wrap justify-end">'
+          + featScreenBadge + featCamouBadge
+          + '</div>'
+          + '</div>'
+          + '</div>'
+          + '<div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1 text-[11px]">'
+          + '<button type="button" onclick="handleOpenExtend(' + idx + ')" class="h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-medium flex items-center justify-center gap-1 transition-colors">'
+          + '<i data-lucide="calendar-plus" class="size-3 text-zinc-500 dark:text-zinc-400"></i>'
+          + '<span class="truncate">Perpanjang</span>'
+          + '</button>'
+          + '<button type="button" onclick="handleOpenFeatures(' + idx + ')" class="h-8 rounded-lg border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50/70 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 font-medium flex items-center justify-center gap-1 transition-colors" title="Atur Proteksi Layar & Kamuflase">'
+          + '<i data-lucide="sliders" class="size-3"></i>'
+          + '<span class="truncate">Fitur</span>'
+          + '</button>'
+          + '<button type="button" onclick="handleToggleSuspend(' + idx + ')" class="h-8 rounded-lg border ' + suspendBtnClass + ' font-medium flex items-center justify-center gap-1 transition-colors">'
+          + '<i data-lucide="' + suspendIcon + '" class="size-3"></i>'
+          + '<span class="truncate">' + suspendLabel + '</span>'
+          + '</button>'
+          + '<button type="button" onclick="handleDeleteDevice(' + idx + ')" class="h-8 rounded-lg border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 font-medium flex items-center justify-center gap-1 transition-colors">'
+          + '<i data-lucide="trash-2" class="size-3"></i>'
+          + '<span class="truncate">Hapus</span>'
+          + '</button>'
+          + '</div>'
+          + '</div>';
       }).join("");
 
       safeCreateIcons();
@@ -1413,6 +1637,12 @@
         return state.lastFiltered[idx];
       }
       return state.devices[idx];
+    }
+
+    function handleOpenFeatures(idx) {
+      const d = getFilteredDevice(idx);
+      if (!d) return;
+      openManageFeatures(d.machine_id);
     }
 
     function handleEditNotes(idx) {
@@ -1446,10 +1676,81 @@
     }
 
     // --- Actions on Devices ---
+    function openManageFeatures(hwid) {
+      state.managingFeaturesHwid = hwid;
+      const dev = state.devices.find(d => d.machine_id === hwid);
+      const feats = parseFeatures(dev ? dev.notes : "");
+
+      document.getElementById("modalFeaturesHwid").textContent = hwid;
+      document.getElementById("modalFeaturesNotes").textContent = dev ? (getDisplayNotes(dev.notes) || "(Belum ada catatan)") : "-";
+      document.getElementById("modalFeatScreenProtection").checked = feats.screen_protection;
+      document.getElementById("modalFeatCamouflage").checked = feats.camouflage;
+
+      document.getElementById("modalManageFeatures").classList.remove("hidden");
+      safeCreateIcons();
+    }
+
+    async function submitSaveFeatures() {
+      const hwid = state.managingFeaturesHwid;
+      if (!hwid) return;
+
+      const btn = document.getElementById("btnSaveFeatures");
+      btn.disabled = true;
+      btn.textContent = "Menyimpan...";
+
+      const featScreen = document.getElementById("modalFeatScreenProtection").checked;
+      const featCamou = document.getElementById("modalFeatCamouflage").checked;
+
+      try {
+        const dev = state.devices.find(d => d.machine_id === hwid);
+        const currentRawNotes = dev ? (dev.notes || "") : "";
+        const updatedNotes = embedFeaturesInNotes(currentRawNotes, {
+          screen_protection: featScreen,
+          camouflage: featCamou
+        });
+
+        let updatedOk = false;
+        try {
+          const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?machine_id=eq." + encodeURIComponent(hwid), {
+            method: "PATCH",
+            headers: {
+              "apikey": CONFIG.supabaseKey,
+              "Authorization": "Bearer " + CONFIG.supabaseKey,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              notes: updatedNotes,
+              updated_at: new Date().toISOString()
+            })
+          });
+          if (res.ok) updatedOk = true;
+        } catch (e) {
+          console.warn("Direct patch features error:", e);
+        }
+
+        if (!updatedOk) {
+          throw new Error("Gagal menyimpan ke Supabase");
+        }
+
+        if (dev) {
+          dev.notes = updatedNotes;
+        }
+        renderDeviceList();
+        closeModal("modalManageFeatures");
+        showToast("Pengaturan fitur lisensi berhasil disimpan!");
+      } catch (err) {
+        console.error("Save features error:", err);
+        showToast("Gagal menyimpan fitur: " + (err.message || err.toString()), true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Simpan Fitur";
+      }
+    }
+
     function openEditNotes(hwid, currentNotes) {
       state.editingHwid = hwid;
       document.getElementById("modalNotesHwid").textContent = hwid;
-      document.getElementById("modalNotesInput").value = currentNotes;
+      document.getElementById("modalNotesInput").value = getDisplayNotes(currentNotes);
       document.getElementById("modalEditNotes").classList.remove("hidden");
     }
 
@@ -1460,6 +1761,10 @@
       btn.textContent = "Menyimpan...";
 
       try {
+        const dev = state.devices.find(d => d.machine_id === state.editingHwid);
+        const currentFeats = parseFeatures(dev ? dev.notes : "");
+        const combinedNotes = embedFeaturesInNotes(notes, currentFeats);
+
         let savedOk = false;
         try {
           const res = await fetch(CONFIG.supabaseUrl + "/rest/v1/device_registrations?machine_id=eq." + encodeURIComponent(state.editingHwid), {
@@ -1469,7 +1774,7 @@
               "Authorization": "Bearer " + CONFIG.supabaseKey,
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({ notes: notes || null, updated_at: new Date().toISOString() })
+            body: JSON.stringify({ notes: combinedNotes || null, updated_at: new Date().toISOString() })
           });
           if (res.ok) savedOk = true;
         } catch (e) {
@@ -1480,8 +1785,7 @@
           throw new Error("Gagal menghubungi Supabase");
         }
 
-        const dev = state.devices.find(d => d.machine_id === state.editingHwid);
-        if (dev) dev.notes = notes;
+        if (dev) dev.notes = combinedNotes;
         renderDeviceList();
         closeModal("modalEditNotes");
         showToast("Catatan toko berhasil diperbarui!");
@@ -1713,7 +2017,7 @@
             deletedCache.push(hwid);
             SafeStorage.set("repotin_deleted_hwids", JSON.stringify(deletedCache));
           }
-        } catch (e) {}
+        } catch (e) { }
 
         // Update state dan tampilan
         state.devices = state.devices.filter(d => d.machine_id !== hwid);
@@ -1760,21 +2064,21 @@
         return;
       }
 
-      container.innerHTML = state.history.map(function(item, idx) {
+      container.innerHTML = state.history.map(function (item, idx) {
         return '<div class="p-3 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-lg space-y-1.5 text-xs transition-colors">'
           + '<div class="flex items-center justify-between gap-2">'
-            + '<span class="font-mono font-medium text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-950 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-800 truncate">' + escapeHtml(item.hwid) + '</span>'
-            + '<span class="text-[10px] text-zinc-400 dark:text-zinc-500 shrink-0">' + (item.createdAt || '').slice(0, 16).replace('T', ' ') + '</span>'
+          + '<span class="font-mono font-medium text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-950 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-800 truncate">' + escapeHtml(item.hwid) + '</span>'
+          + '<span class="text-[10px] text-zinc-400 dark:text-zinc-500 shrink-0">' + (item.createdAt || '').slice(0, 16).replace('T', ' ') + '</span>'
           + '</div>'
           + '<div class="font-mono font-bold text-zinc-800 dark:text-zinc-200 select-all truncate">' + escapeHtml(item.code) + '</div>'
           + '<div class="flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400">'
-            + '<span class="truncate">' + escapeHtml(item.notes || 'Tanpa catatan') + '</span>'
-            + '<span class="text-zinc-700 dark:text-zinc-200 shrink-0 font-medium">' + (item.validUntil || 'Lifetime') + '</span>'
+          + '<span class="truncate">' + escapeHtml(item.notes || 'Tanpa catatan') + '</span>'
+          + '<span class="text-zinc-700 dark:text-zinc-200 shrink-0 font-medium">' + (item.validUntil || 'Lifetime') + '</span>'
           + '</div>'
           + '<div class="pt-1 flex justify-end">'
-            + '<button type="button" onclick="copyHistoryKey(' + idx + ')" class="text-[10px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition-colors">Salin Kunci</button>'
+          + '<button type="button" onclick="copyHistoryKey(' + idx + ')" class="text-[10px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition-colors">Salin Kunci</button>'
           + '</div>'
-        + '</div>';
+          + '</div>';
       }).join("");
       safeCreateIcons();
     }
@@ -2005,12 +2309,15 @@
       handleLoginSubmit,
       handleLogout,
       handleOpenExtend,
+      handleOpenFeatures,
       handleShareWA,
       handleToggleSuspend,
       loadDevices,
       openEditNotes,
       openExtendModal,
+      openManageFeatures,
       openFreshUrl,
+      parseFeatures,
       pasteHwid,
       renderDeviceList,
       renderHistory,
@@ -2024,6 +2331,7 @@
       shareToWhatsApp,
       showToast,
       submitExtendExpiry,
+      submitSaveFeatures,
       submitSaveNotes,
       switchTab,
       togglePasswordVisibility,
